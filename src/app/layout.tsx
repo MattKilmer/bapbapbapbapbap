@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     siteName: "BapBapBapBapBap",
     images: [
       {
-        url: '/opengraph-image',
+        url: '/og-image.png', // Change this to your uploaded image filename
         width: 1200,
         height: 630,
         alt: 'BapBapBapBapBap - just tap it',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "BapBapBapBapBap",
     description: "Interactive audio-visual experience - just tap it",
-    images: ['/opengraph-image'],
+    images: ['/og-image.png'], // Change this to match your uploaded image
   },
   robots: {
     index: true,
