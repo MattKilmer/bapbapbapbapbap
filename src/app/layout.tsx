@@ -19,7 +19,23 @@ const comfortaa = Comfortaa({
 
 export const metadata: Metadata = {
   title: "BapBapBapBapBap",
-  description: "Audio-Visual Trigger Application",
+  description: "Interactive audio-visual experience - just tap it",
+  openGraph: {
+    title: "BapBapBapBapBap",
+    description: "Interactive audio-visual experience - just tap it",
+    type: "website",
+    locale: "en_US",
+    siteName: "BapBapBapBapBap",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BapBapBapBapBap",
+    description: "Interactive audio-visual experience - just tap it",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
