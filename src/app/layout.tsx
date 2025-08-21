@@ -53,6 +53,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  other: {
+    'og:image:width': '1200',
+    'og:image:height': '630',
+    'og:image:type': 'image/png',
+  },
 };
 
 export default function RootLayout({
@@ -62,6 +67,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Additional Open Graph meta tags for Facebook */}
+        <meta property="og:image" content="https://bapbapbapbapbap.com/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:url" content="https://bapbapbapbapbap.com" />
+        <meta property="og:type" content="website" />
+        
+        {/* Twitter meta tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://bapbapbapbapbap.com/og-image.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${comfortaa.variable} antialiased`}
       >
