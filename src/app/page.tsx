@@ -62,14 +62,7 @@ export default function Home() {
   return (
     <main className="fixed inset-0 bg-black text-white">
       <CanvasStage />
-      <GridOverlay onTap={onTap} />
-      <div className="pointer-events-none absolute top-4 left-4 z-10">
-        <div className="bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20">
-          <p className="text-sm font-semibold text-white">
-            Tap zones to test audio & animations
-          </p>
-        </div>
-      </div>
+      <GridOverlay onTap={onTap} zones={cfg?.zones} />
     </main>
   );
 }

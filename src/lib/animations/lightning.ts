@@ -3,31 +3,38 @@ import type { Anim } from './index';
 
 export const lightning: Anim = {
   key: 'lightning',
-  name: 'Lightning',
-  schema: { branches: { type: 'number', default: 6 }, lifeMs: { type: 'number', default: 400 } },
+  name: 'Swarm',
+  schema: { count: { type: 'number', default: 25 }, lifeMs: { type: 'number', default: 2800 } },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const branches = cfg?.branches ?? 6;
+    const particles: any[] = [];
+    const count = cfg?.count ?? 25;
+    const colors = [0xff6b6b, 0x4ecdc4, 0x45b7d1, 0xf9ca24, 0x6c5ce7];
     
-    for (let i = 0; i < branches; i++) {
+    // Create swarming particles
+    for (let i = 0; i < count; i++) {
       const g = new Graphics();
-      const angle = (i / branches) * Math.PI * 2;
-      const length = 40 + Math.random() * 40;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const size = 2 + Math.random() * 3;
       
-      // Create zigzag lightning path
-      const points: number[][] = [];
-      for (let j = 0; j <= 10; j++) {
-        const dist = (j / 10) * length;
-        const zigzag = (Math.random() - 0.5) * 20;
-        points.push([
-          Math.cos(angle) * dist + Math.cos(angle + Math.PI/2) * zigzag,
-          Math.sin(angle) * dist + Math.sin(angle + Math.PI/2) * zigzag
-        ]);
-      }
+      g.circle(0, 0, size).fill(color);
       
-      g.moveTo(0, 0);
-      points.forEach(([px, py]) => g.lineTo(px, py));
-      g.stroke({ width: 2, color: 0xffeb3b });
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * 60;
+      
+      particles.push({
+        graphic: g,
+        x: Math.cos(angle) * distance,
+        y: Math.sin(angle) * distance,
+        vx: (Math.random() - 0.5) * 4,
+        vy: (Math.random() - 0.5) * 4,
+        targetX: 0,
+        targetY: 0,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.3 + Math.random() * 0.7,
+        originalSize: size,
+        life: 0.7 + Math.random() * 0.6
+      });
       
       c.addChild(g);
     }
@@ -36,8 +43,74 @@ export const lightning: Anim = {
     const start = performance.now();
     
     const tick = () => {
-      const t = (performance.now() - start) / (cfg?.lifeMs ?? 400);
-      c.alpha = Math.max(0, 1 - t * 2);
+      const elapsed = performance.now() - start;
+      const t = elapsed / (cfg?.lifeMs ?? 2800);
+      
+      particles.forEach((particle, i) => {
+        // Flocking behavior - attracted to center and neighbors
+        const centerForce = 0.02;
+        const neighborForce = 0.01;
+        const separationForce = 0.05;
+        
+        // Attraction to center
+        const centerDx = -particle.x * centerForce;
+        const centerDy = -particle.y * centerForce;
+        
+        // Neighbor interactions
+        let neighborDx = 0;
+        let neighborDy = 0;
+        let separationDx = 0;
+        let separationDy = 0;
+        
+        particles.forEach((other, j) => {
+          if (i !== j) {
+            const dx = other.x - particle.x;
+            const dy = other.y - particle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 30 && distance > 0) {
+              // Alignment and cohesion
+              neighborDx += other.vx * neighborForce;
+              neighborDy += other.vy * neighborForce;
+              
+              // Separation
+              if (distance < 15) {
+                separationDx -= dx / distance * separationForce;
+                separationDy -= dy / distance * separationForce;
+              }
+            }
+          }
+        });
+        
+        // Apply forces
+        particle.vx += centerDx + neighborDx + separationDx;
+        particle.vy += centerDy + neighborDy + separationDy;
+        
+        // Add some organic movement
+        particle.vx += Math.sin(elapsed * 0.001 + particle.phase) * 0.1;
+        particle.vy += Math.cos(elapsed * 0.001 + particle.phase) * 0.1;
+        
+        // Damping
+        particle.vx *= 0.98;
+        particle.vy *= 0.98;
+        
+        // Update position
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        
+        particle.graphic.x = particle.x;
+        particle.graphic.y = particle.y;
+        
+        // Pulsing size
+        const pulse = 0.8 + 0.4 * Math.sin(elapsed * 0.003 + particle.phase);
+        particle.graphic.scale.set(pulse);
+        
+        // Individual particle lifetime
+        const particleT = t / particle.life;
+        if (particleT <= 1) {
+          particle.graphic.alpha = Math.max(0, 1 - particleT);
+        }
+      });
       
       if (t < 1) requestAnimationFrame(tick); else c.destroy();
     };

@@ -141,12 +141,23 @@ export default function ZonePage({ params }: { params: Promise<{ id: string }> }
               <div key={sample.id} className="border rounded-lg p-3 bg-gray-50">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium truncate">{sample.label}</span>
-                  <button
-                    onClick={() => deleteSample(sample.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        const audio = new Audio(sample.url);
+                        audio.play().catch(e => console.error('Playback failed:', e));
+                      }}
+                      className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-lg font-bold"
+                    >
+                      ▶ Play
+                    </button>
+                    <button
+                      onClick={() => deleteSample(sample.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <label className="text-sm">Gain (dB):</label>

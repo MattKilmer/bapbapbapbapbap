@@ -4,101 +4,174 @@ import type { Anim } from './index';
 export const crystal: Anim = {
   key: 'crystal',
   name: 'Crystal',
-  schema: { shards: { type: 'number', default: 8 }, lifeMs: { type: 'number', default: 1400 } },
+  schema: { 
+    complexity: { type: 'number', default: 16 }, 
+    layers: { type: 'number', default: 3 },
+    lifeMs: { type: 'number', default: 4200 } 
+  },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const shards: any[] = [];
-    const shardCount = cfg?.shards ?? 8;
-    const crystalColors = [0x00ffff, 0x40e0d0, 0x87ceeb, 0xb0e0e6, 0xe0ffff];
+    const complexity = cfg?.complexity ?? 16;
+    const layers = cfg?.layers ?? 3;
+    const lifeMs = cfg?.lifeMs ?? 4200;
+    const crystalParticles: any[] = [];
     
-    // Create main crystal core
+    // Crystal formation colors - ice blues and purples
+    const colors = [0x87ceeb, 0x4682b4, 0x6495ed, 0x9370db, 0x8a2be2, 0xb19cd9];
+    
+    // Create multiple crystalline formation layers
+    for (let layer = 0; layer < layers; layer++) {
+      const layerCount = Math.floor(complexity / layers) + layer * 2;
+      const baseRadius = 15 + layer * 25;
+      
+      for (let i = 0; i < layerCount; i++) {
+        const crystalFace = new Graphics();
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Create hexagonal crystal face with varying sizes
+        const faceSize = 8 + Math.random() * 12;
+        const sides = 6;
+        const innerRadius = faceSize * 0.7;
+        
+        // Draw hexagonal crystal face
+        crystalFace.moveTo(faceSize, 0);
+        for (let s = 1; s <= sides; s++) {
+          const angle = (s / sides) * Math.PI * 2;
+          crystalFace.lineTo(
+            Math.cos(angle) * faceSize,
+            Math.sin(angle) * faceSize
+          );
+        }
+        crystalFace.fill({ color, alpha: 0.8 });
+        
+        // Add inner crystalline structure
+        const inner = new Graphics();
+        inner.moveTo(innerRadius, 0);
+        for (let s = 1; s <= sides; s++) {
+          const angle = (s / sides) * Math.PI * 2;
+          inner.lineTo(
+            Math.cos(angle) * innerRadius,
+            Math.sin(angle) * innerRadius
+          );
+        }
+        inner.fill({ color: 0xffffff, alpha: 0.4 });
+        crystalFace.addChild(inner);
+        
+        // Position in formation
+        const formationAngle = (i / layerCount) * Math.PI * 2;
+        const radius = baseRadius + (Math.random() - 0.5) * 10;
+        const depth = Math.random(); // Simulate depth
+        
+        crystalParticles.push({
+          graphic: crystalFace,
+          x: Math.cos(formationAngle) * radius,
+          y: Math.sin(formationAngle) * radius,
+          baseX: Math.cos(formationAngle) * radius,
+          baseY: Math.sin(formationAngle) * radius,
+          layer: layer,
+          depth: depth,
+          formationAngle: formationAngle,
+          rotationSpeed: (Math.random() - 0.5) * 0.02,
+          pulsePhase: Math.random() * Math.PI * 2,
+          pulseSpeed: 0.5 + Math.random() * 1.5,
+          growthDelay: layer * 150 + i * 40,
+          faceSize: faceSize,
+          originalAlpha: 0.8 - layer * 0.1,
+          life: 0.7 + Math.random() * 0.6,
+          shatterTime: 0.6 + Math.random() * 0.3,
+          shatterVx: (Math.random() - 0.5) * 2,
+          shatterVy: (Math.random() - 0.5) * 2
+        });
+        
+        crystalFace.x = crystalParticles[crystalParticles.length - 1].x;
+        crystalFace.y = crystalParticles[crystalParticles.length - 1].y;
+        crystalFace.scale.set(0);
+        crystalFace.alpha = 0;
+        c.addChild(crystalFace);
+      }
+    }
+    
+    // Central crystal core - brilliant white energy
     const core = new Graphics();
-    core.star(0, 0, 6, 20, 10).fill(0xffffff);
-    core.alpha = 0;
+    core.star(0, 0, 8, 12, 6).fill({ color: 0xffffff, alpha: 0.9 });
+    core.circle(0, 0, 4).fill({ color: 0xffffff, alpha: 0.6 });
     core.scale.set(0);
     c.addChild(core);
-    
-    for (let i = 0; i < shardCount; i++) {
-      const g = new Graphics();
-      const color = crystalColors[Math.floor(Math.random() * crystalColors.length)];
-      const length = 15 + Math.random() * 25;
-      const width = 4 + Math.random() * 6;
-      
-      // Draw crystal shard (elongated diamond)
-      g.moveTo(0, -length);
-      g.lineTo(width/2, -length/3);
-      g.lineTo(0, length/3);
-      g.lineTo(-width/2, -length/3);
-      g.lineTo(0, -length);
-      g.fill(color);
-      
-      // Add inner highlight
-      const highlight = new Graphics();
-      highlight.moveTo(0, -length);
-      highlight.lineTo(width/4, -length/2);
-      highlight.lineTo(0, 0);
-      highlight.lineTo(-width/4, -length/2);
-      highlight.lineTo(0, -length);
-      highlight.fill({ color: 0xffffff, alpha: 0.3 });
-      g.addChild(highlight);
-      
-      const angle = (i / shardCount) * Math.PI * 2;
-      g.rotation = angle;
-      g.scale.set(0);
-      g.alpha = 0;
-      
-      shards.push({
-        graphic: g,
-        angle,
-        delay: i * 80
-      });
-      
-      c.addChild(g);
-    }
     
     c.x = x; c.y = y; stage.addChild(c);
     const start = performance.now();
     
     const tick = () => {
       const elapsed = performance.now() - start;
-      const t = elapsed / (cfg?.lifeMs ?? 1400);
+      const t = elapsed / lifeMs;
       
-      // Animate core
-      if (t < 0.2) {
-        const coreT = t / 0.2;
-        core.scale.set(coreT);
-        core.alpha = coreT;
-      } else if (t > 0.8) {
-        const fadeT = (t - 0.8) / 0.2;
-        core.alpha = Math.max(0, 1 - fadeT);
+      // Core formation phase (0-0.2)
+      if (t < 0.3) {
+        const coreT = t / 0.3;
+        const eased = 1 - Math.pow(1 - coreT, 3);
+        core.scale.set(eased);
+        
+        // Core energy pulsing
+        const energyPulse = 1 + 0.3 * Math.sin(elapsed * 0.008);
+        core.scale.set(eased * energyPulse);
+        core.rotation += 0.02;
       }
       
-      // Pulsing effect
-      const pulse = 1 + 0.2 * Math.sin(elapsed * 0.01);
-      core.scale.set(core.scale.x * pulse);
-      
-      // Animate shards
-      shards.forEach((shard, i) => {
-        const shardT = Math.max(0, (elapsed - shard.delay) / 800);
+      // Crystal formation phase
+      crystalParticles.forEach((crystal, i) => {
+        const crystalT = Math.max(0, (elapsed - crystal.growthDelay) / (lifeMs * 0.4));
         
-        if (shardT > 0 && shardT <= 1) {
-          const eased = 1 - Math.pow(1 - shardT, 2);
-          shard.graphic.scale.set(eased);
-          shard.graphic.alpha = eased;
+        if (crystalT > 0) {
+          // Growth phase - crystals emerge from center
+          if (crystalT < 1) {
+            const growthEased = 1 - Math.pow(1 - Math.min(1, crystalT), 2);
+            crystal.graphic.scale.set(growthEased);
+            crystal.graphic.alpha = crystal.originalAlpha * growthEased;
+            
+            // Crystals rotate into final position
+            crystal.graphic.rotation += crystal.rotationSpeed;
+            
+            // Formation positioning with slight oscillation
+            const oscillation = Math.sin(elapsed * 0.002 + crystal.pulsePhase) * 3;
+            crystal.graphic.x = crystal.baseX + oscillation;
+            crystal.graphic.y = crystal.baseY + oscillation * 0.6;
+            
+            // Individual crystal pulsing
+            const pulse = 0.9 + 0.2 * Math.sin(elapsed * crystal.pulseSpeed * 0.001 + crystal.pulsePhase);
+            crystal.graphic.scale.set(growthEased * pulse);
+          }
           
-          // Slight rotation
-          shard.graphic.rotation = shard.angle + Math.sin(elapsed * 0.005 + i) * 0.1;
-        }
-        
-        // Fade out
-        if (t > 0.6) {
-          const fadeT = (t - 0.6) / 0.4;
-          shard.graphic.alpha *= Math.max(0, 1 - fadeT);
+          // Shatter phase - crystals fragment and scatter
+          const shatterStartT = crystal.shatterTime;
+          if (t > shatterStartT) {
+            const shatterT = (t - shatterStartT) / (1 - shatterStartT);
+            
+            // Scatter motion
+            crystal.x += crystal.shatterVx * shatterT * 60;
+            crystal.y += crystal.shatterVy * shatterT * 60;
+            crystal.graphic.x = crystal.x;
+            crystal.graphic.y = crystal.y;
+            
+            // Spinning as they shatter
+            crystal.graphic.rotation += shatterT * 0.1;
+            
+            // Fade and shrink
+            const fadeT = Math.pow(shatterT, 1.5);
+            crystal.graphic.alpha = crystal.originalAlpha * Math.max(0, 1 - fadeT);
+            crystal.graphic.scale.set((1 - shatterT * 0.7) * (0.9 + 0.2 * Math.sin(elapsed * crystal.pulseSpeed * 0.001)));
+          }
         }
       });
       
+      // Core fade out
+      if (t > 0.75) {
+        const fadeT = (t - 0.75) / 0.25;
+        core.alpha = Math.max(0, 1 - fadeT);
+      }
+      
       if (t < 1) requestAnimationFrame(tick); else c.destroy();
     };
+    
     requestAnimationFrame(tick);
   }
 };

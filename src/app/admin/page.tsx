@@ -106,10 +106,10 @@ export default function AdminPage() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => playAudio(sample.url)}
-                          className="text-blue-500 hover:text-blue-700 px-1"
+                          className="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors text-sm font-medium"
                           title="Play audio"
                         >
-                          ▶️
+                          ▶ Play
                         </button>
                         <button
                           onClick={() => deleteSample(sample.id)}
