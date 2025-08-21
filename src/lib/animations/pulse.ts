@@ -9,10 +9,11 @@ export const pulse: Anim = {
     const c = new Container();
     const rings: any[] = [];
     const ringCount = cfg?.rings ?? 4;
+    const globalScale = cfg?.globalScale ?? 1;
     
     for (let i = 0; i < ringCount; i++) {
       const g = new Graphics();
-      g.circle(0, 0, 30).stroke({ width: 3, color: 0x4ecdc4 });
+      g.circle(0, 0, 30 * globalScale).stroke({ width: 3 * globalScale, color: 0x4ecdc4 });
       rings.push({ graphic: g, delay: i * 200 });
       c.addChild(g);
     }
@@ -27,7 +28,7 @@ export const pulse: Anim = {
       rings.forEach((ring) => {
         const t = Math.max(0, (elapsed - ring.delay) / totalLife);
         if (t > 0 && t <= 1) {
-          ring.graphic.scale.set(1 + t * 2);
+          ring.graphic.scale.set((1 + t * 2) * globalScale);
           ring.graphic.alpha = Math.max(0, 1 - t);
         }
       });

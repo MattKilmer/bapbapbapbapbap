@@ -12,8 +12,9 @@ export const confetti: Anim = {
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
     const count = cfg?.count ?? 20;
-    const spread = cfg?.spread ?? 80;
+    const spread = (cfg?.spread ?? 80) * (cfg?.globalScale ?? 1);
     const lifeMs = cfg?.lifeMs ?? 2000;
+    const globalScale = cfg?.globalScale ?? 1;
     
     c.x = x; c.y = y; stage.addChild(c);
     
@@ -23,13 +24,13 @@ export const confetti: Anim = {
     for (let i = 0; i < count; i++) {
       const particle = new Graphics();
       const color = colors[Math.floor(Math.random() * colors.length)];
-      const size = 3 + Math.random() * 4;
+      const size = (3 + Math.random() * 4) * globalScale;
       
       particle.rect(-size/2, -size/2, size, size).fill(color);
       c.addChild(particle);
       
       const angle = (Math.random() - 0.5) * Math.PI;
-      const velocity = 2 + Math.random() * 4;
+      const velocity = (2 + Math.random() * 4) * globalScale;
       
       particles.push({
         graphic: particle,

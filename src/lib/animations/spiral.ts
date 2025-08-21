@@ -8,10 +8,11 @@ export const spiral: Anim = {
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
     const particles: any[] = [];
+    const globalScale = cfg?.globalScale ?? 1;
     
     for (let i = 0; i < 12; i++) {
       const g = new Graphics();
-      g.circle(0, 0, 4).fill(0xff6b6b);
+      g.circle(0, 0, 4 * globalScale).fill(0xff6b6b);
       particles.push(g);
       c.addChild(g);
     }
@@ -25,7 +26,7 @@ export const spiral: Anim = {
       
       particles.forEach((p, i) => {
         const angle = (t * turns * Math.PI * 2) + (i * (Math.PI * 2) / particles.length);
-        const radius = t * 50;
+        const radius = t * 50 * globalScale;
         p.x = Math.cos(angle) * radius;
         p.y = Math.sin(angle) * radius;
         p.alpha = Math.max(0, 1 - t);

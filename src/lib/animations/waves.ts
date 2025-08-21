@@ -14,6 +14,7 @@ export const waves: Anim = {
     const layers = cfg?.layers ?? 8;
     const intensity = cfg?.intensity ?? 40;
     const lifeMs = cfg?.lifeMs ?? 2800;
+    const globalScale = cfg?.globalScale ?? 1;
     
     c.x = x; c.y = y; stage.addChild(c);
     
@@ -24,7 +25,7 @@ export const waves: Anim = {
     // Create fluid particle system instead of discrete wave lines
     for (let i = 0; i < particleCount; i++) {
       const particle = new Graphics();
-      const size = 1 + Math.random() * 3;
+      const size = (1 + Math.random() * 3) * globalScale;
       const color = colors[Math.floor(Math.random() * colors.length)];
       
       // Create soft glowing particles
@@ -32,7 +33,7 @@ export const waves: Anim = {
       particle.circle(0, 0, size).fill({ color, alpha: 0.6 });
       
       const angle = Math.random() * Math.PI * 2;
-      const distance = Math.random() * 80;
+      const distance = Math.random() * 80 * globalScale;
       
       waveParticles.push({
         graphic: particle,
@@ -43,7 +44,7 @@ export const waves: Anim = {
         waveIndex: Math.floor(i / (particleCount / layers)),
         phase: Math.random() * Math.PI * 2,
         frequency: 0.8 + Math.random() * 1.2,
-        amplitude: 15 + Math.random() * intensity,
+        amplitude: (15 + Math.random() * intensity) * globalScale,
         speed: 0.5 + Math.random() * 1.5,
         life: 0.7 + Math.random() * 0.6,
         size: size,

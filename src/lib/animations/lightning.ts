@@ -9,31 +9,33 @@ export const lightning: Anim = {
     const c = new Container();
     const particles: any[] = [];
     const count = cfg?.count ?? 25;
+    const globalScale = cfg?.globalScale ?? 1;
     const colors = [0xff6b6b, 0x4ecdc4, 0x45b7d1, 0xf9ca24, 0x6c5ce7];
     
     // Create swarming particles
     for (let i = 0; i < count; i++) {
       const g = new Graphics();
       const color = colors[Math.floor(Math.random() * colors.length)];
-      const size = 2 + Math.random() * 3;
+      const size = (2 + Math.random() * 3) * globalScale;
       
       g.circle(0, 0, size).fill(color);
       
       const angle = Math.random() * Math.PI * 2;
-      const distance = Math.random() * 60;
+      const distance = Math.random() * 60 * globalScale;
       
       particles.push({
         graphic: g,
         x: Math.cos(angle) * distance,
         y: Math.sin(angle) * distance,
-        vx: (Math.random() - 0.5) * 4,
-        vy: (Math.random() - 0.5) * 4,
+        vx: (Math.random() - 0.5) * 4 * globalScale,
+        vy: (Math.random() - 0.5) * 4 * globalScale,
         targetX: 0,
         targetY: 0,
         phase: Math.random() * Math.PI * 2,
         speed: 0.3 + Math.random() * 0.7,
         originalSize: size,
-        life: 0.7 + Math.random() * 0.6
+        life: 0.7 + Math.random() * 0.6,
+        globalScale: globalScale
       });
       
       c.addChild(g);
@@ -47,10 +49,10 @@ export const lightning: Anim = {
       const t = elapsed / (cfg?.lifeMs ?? 2800);
       
       particles.forEach((particle, i) => {
-        // Flocking behavior - attracted to center and neighbors
-        const centerForce = 0.02;
-        const neighborForce = 0.01;
-        const separationForce = 0.05;
+        // Flocking behavior - attracted to center and neighbors (scaled)
+        const centerForce = 0.02 * particle.globalScale;
+        const neighborForce = 0.01 * particle.globalScale;
+        const separationForce = 0.05 * particle.globalScale;
         
         // Attraction to center
         const centerDx = -particle.x * centerForce;
@@ -68,13 +70,13 @@ export const lightning: Anim = {
             const dy = other.y - particle.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            if (distance < 30 && distance > 0) {
+            if (distance < 30 * particle.globalScale && distance > 0) {
               // Alignment and cohesion
               neighborDx += other.vx * neighborForce;
               neighborDy += other.vy * neighborForce;
               
               // Separation
-              if (distance < 15) {
+              if (distance < 15 * particle.globalScale) {
                 separationDx -= dx / distance * separationForce;
                 separationDy -= dy / distance * separationForce;
               }

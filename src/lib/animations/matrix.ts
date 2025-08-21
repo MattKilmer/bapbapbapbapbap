@@ -13,6 +13,7 @@ export const matrix: Anim = {
     const c = new Container();
     const density = cfg?.density ?? 40;
     const chaos = cfg?.chaos ?? 3;
+    const globalScale = cfg?.globalScale ?? 1;
     const dataStreams: any[] = [];
     
     // Abstract symbols and varied character sets
@@ -45,9 +46,9 @@ export const matrix: Anim = {
       
       // Position streams in abstract formations
       const angle = Math.random() * Math.PI * 2;
-      const radius = Math.random() * 60;
+      const radius = Math.random() * 60 * globalScale;
       const baseX = Math.cos(angle) * radius;
-      const baseY = Math.sin(angle) * radius - 80;
+      const baseY = Math.sin(angle) * radius - 80 * globalScale;
       
       // Create flowing direction (not just downward)
       const flowAngle = angle + (Math.random() - 0.5) * Math.PI * 0.5;
@@ -62,7 +63,7 @@ export const matrix: Anim = {
         const text = new Text({
           text: char,
           style: {
-            fontSize: 8 + Math.random() * 8,
+            fontSize: (8 + Math.random() * 8) * globalScale,
             fill: colorPalette[colorIndex],
             fontFamily: 'monospace',
             fontWeight: j < 2 ? 'bold' : 'normal'
@@ -70,8 +71,8 @@ export const matrix: Anim = {
         });
         
         // Abstract positioning with slight randomness
-        text.x = baseX + (Math.random() - 0.5) * 8;
-        text.y = baseY - j * (10 + Math.random() * 8);
+        text.x = baseX + (Math.random() - 0.5) * 8 * globalScale;
+        text.y = baseY - j * (10 + Math.random() * 8) * globalScale;
         text.alpha = j === 0 ? 1 : Math.max(0.2, 1 - j * 0.1);
         text.rotation = (Math.random() - 0.5) * 0.3;
         
@@ -109,8 +110,8 @@ export const matrix: Anim = {
             char.y += stream.flowY * stream.speed;
             
             // Add chaotic movement based on chaos parameter
-            char.x += Math.sin(elapsed * 0.003 + charIndex + streamIndex) * chaos * 0.5;
-            char.y += Math.cos(elapsed * 0.002 + charIndex) * chaos * 0.3;
+            char.x += Math.sin(elapsed * 0.003 + charIndex + streamIndex) * chaos * 0.5 * globalScale;
+            char.y += Math.cos(elapsed * 0.002 + charIndex) * chaos * 0.3 * globalScale;
             
             // Rotation and scaling effects
             char.rotation += stream.rotationSpeed;

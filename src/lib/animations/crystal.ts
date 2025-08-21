@@ -14,6 +14,7 @@ export const crystal: Anim = {
     const complexity = cfg?.complexity ?? 16;
     const layers = cfg?.layers ?? 3;
     const lifeMs = cfg?.lifeMs ?? 4200;
+    const globalScale = cfg?.globalScale ?? 1;
     const crystalParticles: any[] = [];
     
     // Crystal formation colors - ice blues and purples
@@ -22,14 +23,14 @@ export const crystal: Anim = {
     // Create multiple crystalline formation layers
     for (let layer = 0; layer < layers; layer++) {
       const layerCount = Math.floor(complexity / layers) + layer * 2;
-      const baseRadius = 15 + layer * 25;
+      const baseRadius = (15 + layer * 25) * globalScale;
       
       for (let i = 0; i < layerCount; i++) {
         const crystalFace = new Graphics();
         const color = colors[Math.floor(Math.random() * colors.length)];
         
         // Create hexagonal crystal face with varying sizes
-        const faceSize = 8 + Math.random() * 12;
+        const faceSize = (8 + Math.random() * 12) * globalScale;
         const sides = 6;
         const innerRadius = faceSize * 0.7;
         
@@ -93,8 +94,8 @@ export const crystal: Anim = {
     
     // Central crystal core - brilliant white energy
     const core = new Graphics();
-    core.star(0, 0, 8, 12, 6).fill({ color: 0xffffff, alpha: 0.9 });
-    core.circle(0, 0, 4).fill({ color: 0xffffff, alpha: 0.6 });
+    core.star(0, 0, 8 * globalScale, 12 * globalScale, 6 * globalScale).fill({ color: 0xffffff, alpha: 0.9 });
+    core.circle(0, 0, 4 * globalScale).fill({ color: 0xffffff, alpha: 0.6 });
     core.scale.set(0);
     c.addChild(core);
     
@@ -132,7 +133,7 @@ export const crystal: Anim = {
             crystal.graphic.rotation += crystal.rotationSpeed;
             
             // Formation positioning with slight oscillation
-            const oscillation = Math.sin(elapsed * 0.002 + crystal.pulsePhase) * 3;
+            const oscillation = Math.sin(elapsed * 0.002 + crystal.pulsePhase) * 3 * globalScale;
             crystal.graphic.x = crystal.baseX + oscillation;
             crystal.graphic.y = crystal.baseY + oscillation * 0.6;
             
@@ -147,8 +148,8 @@ export const crystal: Anim = {
             const shatterT = (t - shatterStartT) / (1 - shatterStartT);
             
             // Scatter motion
-            crystal.x += crystal.shatterVx * shatterT * 60;
-            crystal.y += crystal.shatterVy * shatterT * 60;
+            crystal.x += crystal.shatterVx * shatterT * 60 * globalScale;
+            crystal.y += crystal.shatterVy * shatterT * 60 * globalScale;
             crystal.graphic.x = crystal.x;
             crystal.graphic.y = crystal.y;
             

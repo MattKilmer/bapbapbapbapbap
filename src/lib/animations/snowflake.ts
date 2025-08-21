@@ -9,20 +9,21 @@ export const snowflake: Anim = {
     const c = new Container();
     const particles: any[] = [];
     const density = cfg?.density ?? 40;
+    const globalScale = cfg?.globalScale ?? 1;
     const colors = [0x4a90e2, 0x7b68ee, 0x9370db, 0xba55d3, 0xda70d6, 0x87ceeb];
     
     // Create nebula particles with varying properties
     for (let i = 0; i < density; i++) {
       const g = new Graphics();
       const color = colors[Math.floor(Math.random() * colors.length)];
-      const size = 1 + Math.random() * 4;
+      const size = (1 + Math.random() * 4) * globalScale;
       
       // Create glowing particle with soft edges
       g.circle(0, 0, size * 2).fill({ color, alpha: 0.1 }); // Outer glow
       g.circle(0, 0, size).fill({ color, alpha: 0.7 }); // Inner core
       
       const angle = Math.random() * Math.PI * 2;
-      const distance = Math.random() * 80;
+      const distance = Math.random() * 80 * globalScale;
       const depth = Math.random(); // Z-depth simulation
       
       particles.push({
@@ -47,8 +48,8 @@ export const snowflake: Anim = {
     
     // Add central energy source
     const center = new Graphics();
-    center.circle(0, 0, 6).fill({ color: 0xffffff, alpha: 0.3 });
-    center.circle(0, 0, 3).fill({ color: 0xffffff, alpha: 0.8 });
+    center.circle(0, 0, 6 * globalScale).fill({ color: 0xffffff, alpha: 0.3 });
+    center.circle(0, 0, 3 * globalScale).fill({ color: 0xffffff, alpha: 0.8 });
     c.addChild(center);
     
     c.x = x; c.y = y; stage.addChild(c);
@@ -67,8 +68,8 @@ export const snowflake: Anim = {
         const orbitY = Math.sin(particle.baseAngle) * particle.orbitRadius;
         
         // Add drift motion
-        const driftX = Math.sin(elapsed * particle.driftSpeed * 0.001 + particle.phase) * 10;
-        const driftY = Math.cos(elapsed * particle.driftSpeed * 0.001 + particle.phase * 1.3) * 8;
+        const driftX = Math.sin(elapsed * particle.driftSpeed * 0.001 + particle.phase) * 10 * globalScale;
+        const driftY = Math.cos(elapsed * particle.driftSpeed * 0.001 + particle.phase * 1.3) * 8 * globalScale;
         
         particle.x = orbitX + driftX;
         particle.y = orbitY + driftY;

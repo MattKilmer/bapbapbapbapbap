@@ -9,6 +9,7 @@ export const geometric: Anim = {
     const c = new Container();
     const shapes: any[] = [];
     const shapeCount = cfg?.shapes ?? 5;
+    const globalScale = cfg?.globalScale ?? 1;
     const shapeTypes = ['triangle', 'square', 'pentagon', 'hexagon'];
     const colors = [0xff6b6b, 0x4ecdc4, 0x45b7d1, 0xf9ca24, 0xf0932b];
     
@@ -16,7 +17,7 @@ export const geometric: Anim = {
       const g = new Graphics();
       const shapeType = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
       const color = colors[Math.floor(Math.random() * colors.length)];
-      const size = 10 + Math.random() * 20;
+      const size = (10 + Math.random() * 20) * globalScale;
       
       // Draw different geometric shapes
       switch (shapeType) {
@@ -45,7 +46,7 @@ export const geometric: Anim = {
       g.scale.set(0);
       
       const angle = (i / shapeCount) * Math.PI * 2;
-      const distance = 30 + Math.random() * 30;
+      const distance = (30 + Math.random() * 30) * globalScale;
       
       shapes.push({
         graphic: g,
@@ -74,7 +75,7 @@ export const geometric: Anim = {
             const eased = 1 - Math.pow(1 - shapeT, 3);
             shape.graphic.x = shape.targetX * eased;
             shape.graphic.y = shape.targetY * eased;
-            shape.graphic.scale.set(eased);
+            shape.graphic.scale.set(eased * globalScale);
             shape.graphic.alpha = eased;
           }
           

@@ -61,7 +61,12 @@ export default function Home() {
       const anim = animations[zone.animationKey];
       if (anim) {
         console.log('Running animation:', zone.animationKey);
-        anim.run({ app: appRef.current, stage: appRef.current.stage, zoneIndex, x, y, cfg: zone.animationCfg });
+        // Scale animations to be twice as big
+        const scaledCfg = {
+          ...zone.animationCfg,
+          globalScale: 2
+        };
+        anim.run({ app: appRef.current, stage: appRef.current.stage, zoneIndex, x, y, cfg: scaledCfg });
       }
     } else {
       console.log('PIXI app not ready, skipping animation');

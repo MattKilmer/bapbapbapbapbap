@@ -8,6 +8,7 @@ export const flower: Anim = {
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
     const complexity = cfg?.complexity ?? 6;
+    const globalScale = cfg?.globalScale ?? 1;
     const layers: any[] = [];
     const colors = [0xff6b9d, 0x4ecdc4, 0x45b7d1, 0xf9ca24, 0x6c5ce7, 0xff4757];
     
@@ -17,7 +18,7 @@ export const flower: Anim = {
       const layerData: any[] = [];
       
       const elementsInLayer = 8 + layer * 4; // Increasing complexity per layer
-      const radius = 15 + layer * 12;
+      const radius = (15 + layer * 12) * globalScale;
       const color = colors[layer % colors.length];
       
       for (let i = 0; i < elementsInLayer; i++) {
@@ -25,8 +26,8 @@ export const flower: Anim = {
         const angle = (i / elementsInLayer) * Math.PI * 2;
         
         // Create intricate petal/geometric shapes
-        const petalLength = 8 + layer * 3;
-        const petalWidth = 3 + layer;
+        const petalLength = (8 + layer * 3) * globalScale;
+        const petalWidth = (3 + layer) * globalScale;
         
         // Multiple petal segments for complexity
         for (let segment = 0; segment < 3; segment++) {
@@ -77,7 +78,7 @@ export const flower: Anim = {
     
     // Central energy core
     const core = new Graphics();
-    core.circle(0, 0, 4).fill({ color: 0xffffff, alpha: 0.9 });
+    core.circle(0, 0, 4 * globalScale).fill({ color: 0xffffff, alpha: 0.9 });
     core.scale.set(0);
     c.addChild(core);
     

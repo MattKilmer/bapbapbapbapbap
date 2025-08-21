@@ -12,14 +12,14 @@ export const ripple: Anim = {
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
     const rings = cfg?.rings ?? 3;
-    const maxRadius = cfg?.maxRadius ?? 100;
+    const maxRadius = (cfg?.maxRadius ?? 100) * (cfg?.globalScale ?? 1);
     const lifeMs = cfg?.lifeMs ?? 1000;
     
     c.x = x; c.y = y; stage.addChild(c);
     
     for (let i = 0; i < rings; i++) {
       const g = new Graphics();
-      g.circle(0, 0, 1).stroke({ width: 2, color: 0x00aaff });
+      g.circle(0, 0, 1).stroke({ width: 2 * (cfg?.globalScale ?? 1), color: 0x00aaff });
       c.addChild(g);
       
       const delay = (i * lifeMs) / (rings * 2);

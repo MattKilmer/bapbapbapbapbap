@@ -9,16 +9,17 @@ export const galaxy: Anim = {
     const c = new Container();
     const stars: any[] = [];
     const starCount = cfg?.stars ?? 30;
+    const globalScale = cfg?.globalScale ?? 1;
     
     for (let i = 0; i < starCount; i++) {
       const g = new Graphics();
-      const size = 1 + Math.random() * 3;
+      const size = (1 + Math.random() * 3) * globalScale;
       const brightness = Math.random();
       const color = brightness > 0.7 ? 0xffffff : brightness > 0.4 ? 0x87ceeb : 0x4169e1;
       
       g.circle(0, 0, size).fill(color);
       
-      const distance = 10 + Math.random() * 60;
+      const distance = (10 + Math.random() * 60) * globalScale;
       const angle = Math.random() * Math.PI * 2;
       const speed = 0.3 + Math.random() * 0.7;
       
@@ -35,7 +36,7 @@ export const galaxy: Anim = {
     
     // Add central bright star
     const center = new Graphics();
-    center.circle(0, 0, 6).fill(0xffd700);
+    center.circle(0, 0, 6 * globalScale).fill(0xffd700);
     center.alpha = 0;
     c.addChild(center);
     

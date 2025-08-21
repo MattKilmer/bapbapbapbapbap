@@ -9,10 +9,11 @@ export const plasma: Anim = {
     const c = new Container();
     const orbs: any[] = [];
     const orbCount = cfg?.orbs ?? 12;
+    const globalScale = cfg?.globalScale ?? 1;
     
     for (let i = 0; i < orbCount; i++) {
       const g = new Graphics();
-      const size = 3 + Math.random() * 8;
+      const size = (3 + Math.random() * 8) * globalScale;
       
       // Create plasma-like gradient effect with multiple circles
       const colors = [0xff0080, 0x8000ff, 0x0080ff, 0x00ff80];
@@ -24,7 +25,7 @@ export const plasma: Anim = {
       g.circle(0, 0, size).fill({ color, alpha: 0.8 });
       
       const angle = (i / orbCount) * Math.PI * 2;
-      const distance = Math.random() * 50;
+      const distance = Math.random() * 50 * globalScale;
       const speed = 0.5 + Math.random() * 1.5;
       const phase = Math.random() * Math.PI * 2;
       
@@ -50,7 +51,7 @@ export const plasma: Anim = {
       orbs.forEach((orb, i) => {
         // Orbital motion with wobble
         const currentAngle = orb.baseAngle + elapsed * 0.001 * orb.speed;
-        const wobble = Math.sin(elapsed * orb.wobbleSpeed + orb.phase) * 15;
+        const wobble = Math.sin(elapsed * orb.wobbleSpeed + orb.phase) * 15 * globalScale;
         const currentDistance = orb.distance + wobble;
         
         orb.graphic.x = Math.cos(currentAngle) * currentDistance;

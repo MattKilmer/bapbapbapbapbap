@@ -9,15 +9,16 @@ export const firework: Anim = {
     const c = new Container();
     const sparks: any[] = [];
     const sparkCount = cfg?.sparks ?? 16;
+    const globalScale = cfg?.globalScale ?? 1;
     const colors = [0xff4757, 0x3742fa, 0x2ed573, 0xffa502, 0xff6b6b];
     
     for (let i = 0; i < sparkCount; i++) {
       const g = new Graphics();
       const color = colors[Math.floor(Math.random() * colors.length)];
-      g.circle(0, 0, 3).fill(color);
+      g.circle(0, 0, 3 * globalScale).fill(color);
       
       const angle = (i / sparkCount) * Math.PI * 2;
-      const velocity = 1 + Math.random() * 2;
+      const velocity = (1 + Math.random() * 2) * globalScale;
       
       sparks.push({
         graphic: g,
@@ -38,12 +39,12 @@ export const firework: Anim = {
       sparks.forEach((spark) => {
         const sparkT = t / spark.life;
         if (sparkT <= 1) {
-          spark.graphic.x += spark.vx * 2;
-          spark.graphic.y += spark.vy * 2;
+          spark.graphic.x += spark.vx * 2 * globalScale;
+          spark.graphic.y += spark.vy * 2 * globalScale;
           spark.vy += spark.gravity;
           
           spark.graphic.alpha = Math.max(0, 1 - sparkT);
-          spark.graphic.scale.set(Math.max(0.2, 1 - sparkT * 0.5));
+          spark.graphic.scale.set(Math.max(0.2, 1 - sparkT * 0.5) * globalScale);
         }
       });
       
