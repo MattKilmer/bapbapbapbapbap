@@ -5,9 +5,17 @@ import { UploadAudio } from '@/components/Admin/UploadAudio';
 export default function AdminPage() {
   const [zones, setZones] = useState<any[]>([]);
   const [animations, setAnimations] = useState<any[]>([]);
+  const [globalScale, setGlobalScale] = useState<number>(2);
+  const [tempGlobalScale, setTempGlobalScale] = useState<number>(2);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetch('/api/config').then(r => r.json()).then(data => setZones(data.zones));
+    fetch('/api/config').then(r => r.json()).then(data => {
+      setZones(data.zones);
+      const scale = data.globalScale || 2;
+      setGlobalScale(scale);
+      setTempGlobalScale(scale);
+    });
     fetch('/api/animations').then(r => r.json()).then(data => setAnimations(data.animations));
   }, []);
 
@@ -15,7 +23,37 @@ export default function AdminPage() {
     const response = await fetch('/api/config');
     const config = await response.json();
     setZones(config.zones);
+    const scale = config.globalScale || 2;
+    setGlobalScale(scale);
+    setTempGlobalScale(scale);
   };
+
+  const saveGlobalScale = async () => {
+    setSaving(true);
+    try {
+      const response = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ globalScale: tempGlobalScale })
+      });
+      
+      const result = await response.json();
+      if (response.ok && result.globalScale !== undefined) {
+        setGlobalScale(tempGlobalScale);
+        console.log('Global scale saved:', tempGlobalScale);
+      } else {
+        console.error('Failed to save global scale');
+        alert('Failed to save global scale - please try again');
+      }
+    } catch (error) {
+      console.error('Failed to update global scale:', error);
+      alert('Failed to save global scale - please try again');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const hasUnsavedChanges = globalScale !== tempGlobalScale;
 
   const updateZone = async (zoneId: number, data: any) => {
     await fetch(`/api/zones/${zoneId}`, {
@@ -55,6 +93,44 @@ export default function AdminPage() {
               <span>{zones.filter(z => z.isActive).length} active zones</span>
               <span className="mx-2">•</span>
               <span>{zones.reduce((acc, z) => acc + (z.samples?.length || 0), 0)} total samples</span>
+            </div>
+          </div>
+          
+          {/* Global Animation Scale Control */}
+          <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+            <div className="flex items-center gap-4 flex-wrap">
+              <label className="text-sm font-semibold text-purple-800">
+                🎨 Global Animation Scale:
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="0.5"
+                  max="5"
+                  step="0.5"
+                  value={tempGlobalScale}
+                  onChange={(e) => setTempGlobalScale(parseFloat(e.target.value))}
+                  className="w-32 h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+                <span className="text-lg font-bold text-purple-700 min-w-[3rem]">
+                  {tempGlobalScale}x
+                </span>
+              </div>
+              <button
+                onClick={saveGlobalScale}
+                disabled={!hasUnsavedChanges || saving}
+                className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${
+                  hasUnsavedChanges && !saving
+                    ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {saving ? '⏳ Saving...' : hasUnsavedChanges ? '💾 Save Changes' : '✅ Saved'}
+              </button>
+              <div className="text-xs text-purple-600 max-w-md">
+                Controls how big all animations appear (0.5x = tiny, 2x = default, 5x = huge)
+                {hasUnsavedChanges && <div className="text-orange-600 font-medium">⚠️ You have unsaved changes</div>}
+              </div>
             </div>
           </div>
         </div>

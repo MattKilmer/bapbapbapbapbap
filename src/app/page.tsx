@@ -12,7 +12,20 @@ export default function Home() {
   const [isFirstTap, setIsFirstTap] = useState(true);
   const appRef = useRef<Application | null>(null);
 
-  useEffect(() => { fetch('/api/config').then(r => r.json()).then(setCfg); }, []);
+  useEffect(() => { 
+    const loadConfig = () => fetch('/api/config').then(r => r.json()).then(data => {
+      console.log('Main app received config with globalScale:', data.globalScale, 'at', new Date().toLocaleTimeString());
+      setCfg(data);
+    });
+    
+    // Load config initially
+    loadConfig();
+    
+    // Poll for updates every 2 seconds to catch admin changes
+    const interval = setInterval(loadConfig, 2000);
+    
+    return () => clearInterval(interval);
+  }, []);
   useEffect(() => { 
     // Check for PIXI app periodically until it's available
     const checkApp = () => {
@@ -60,12 +73,13 @@ export default function Home() {
     if (appRef.current) {
       const anim = animations[zone.animationKey];
       if (anim) {
-        console.log('Running animation:', zone.animationKey);
-        // Scale animations to be twice as big
+        console.log('Running animation:', zone.animationKey, 'with cfg.globalScale:', cfg.globalScale);
+        // Use dynamic global scale from settings
         const scaledCfg = {
           ...zone.animationCfg,
-          globalScale: 2
+          globalScale: cfg.globalScale || 2
         };
+        console.log('scaledCfg passed to animation:', scaledCfg);
         anim.run({ app: appRef.current, stage: appRef.current.stage, zoneIndex, x, y, cfg: scaledCfg });
       }
     } else {
