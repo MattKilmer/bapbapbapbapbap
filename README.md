@@ -2,8 +2,6 @@
 
 A modern audio-visual trigger application built with Next.js 15 and PIXI.js. Create an immersive 4×4 grid of interactive zones that trigger unique particle-based animations paired with custom audio samples.
 
-![BapBapBapBapBap Demo](https://via.placeholder.com/800x400/000000/FFFFFF?text=BapBapBapBapBap%20Demo)
-
 ## 🚀 Try It Out
 
 **[Live Demo: bapbapbapbapbap.com](https://www.bapbapbapbapbap.com/)**
@@ -229,7 +227,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/MattKilmer/bapbapbapbapbap/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/MattKilmer/bapbapbapbapbap/discussions)
-- **Email**: [your-email@example.com](mailto:your-email@example.com)
+- **Email**: [your-email@example.com](mvkilmer@hotmail.com)
 
 ---
 

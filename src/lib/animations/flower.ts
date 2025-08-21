@@ -94,7 +94,7 @@ export const flower: Anim = {
         // Rotate entire layer
         layer.container.rotation += layer.rotationSpeed;
         
-        layer.elements.forEach((element: any, elementIndex) => {
+        layer.elements.forEach((element: any, elementIndex: number) => {
           if (layerT > 0) {
             // Growth animation
             const growthT = Math.min(1, layerT * 2);
