@@ -2,29 +2,30 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 export const size = {
-  width: 32,
-  height: 32,
+  width: 180,
+  height: 180,
 };
 export const contentType = 'image/png';
 
-export default function Icon() {
+export default function AppleIcon() {
   return new ImageResponse(
     (
       <div
         style={{
-          background: 'linear-gradient(45deg, #000000, #333333)',
+          background: 'linear-gradient(135deg, #000000, #1a1a1a)',
           width: '100%',
           height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
+          borderRadius: '20%',
         }}
       >
         {/* Main "B" */}
         <div
           style={{
-            fontSize: '20px',
+            fontSize: '120px',
             fontWeight: 'bold',
             color: '#ffffff',
             fontFamily: 'system-ui, sans-serif',
@@ -33,16 +34,27 @@ export default function Icon() {
           B
         </div>
         
-        {/* Small decorative dot */}
+        {/* Decorative dots */}
         <div
           style={{
             position: 'absolute',
-            width: '4px',
-            height: '4px',
+            width: '12px',
+            height: '12px',
             borderRadius: '50%',
             background: '#90ee90',
-            bottom: '6px',
-            right: '6px',
+            top: '20px',
+            right: '20px',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            background: '#87ceeb',
+            bottom: '25px',
+            left: '25px',
           }}
         />
       </div>
