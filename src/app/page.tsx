@@ -8,6 +8,8 @@ import { play } from '@/lib/audio/engine';
 
 export default function Home() {
   const [cfg, setCfg] = useState<any>(null);
+  const [showWelcome, setShowWelcome] = useState(true);
+  const [isFirstTap, setIsFirstTap] = useState(true);
   const appRef = useRef<Application | null>(null);
 
   useEffect(() => { fetch('/api/config').then(r => r.json()).then(setCfg); }, []);
@@ -26,6 +28,13 @@ export default function Home() {
   }, []);
 
   const onTap = (zoneIndex: number, x: number, y: number) => {
+    // Handle first tap welcome message
+    if (isFirstTap) {
+      setIsFirstTap(false);
+      // Start fade out animation, then remove from DOM after transition
+      setTimeout(() => setShowWelcome(false), 1000);
+    }
+    
     console.log('Zone tapped:', zoneIndex);
     if (!cfg) {
       console.log('Missing cfg:', { cfg: !!cfg });
@@ -61,8 +70,45 @@ export default function Home() {
 
   return (
     <main className="fixed inset-0 bg-black text-white">
+      {/* Pulsing glow border */}
+      <div className="fixed inset-0 pointer-events-none z-50">
+        <div className="absolute inset-0" 
+             style={{
+               animation: 'pulse-glow 5s ease-in-out infinite',
+               margin: '0',
+               boxSizing: 'border-box'
+             }}>
+        </div>
+      </div>
       <CanvasStage />
       <GridOverlay onTap={onTap} zones={cfg?.zones} />
+      
+      {/* Welcome Message */}
+      {showWelcome && (
+        <div className={`fixed inset-0 flex items-center justify-center z-40 pointer-events-none transition-opacity duration-1000 ${
+          !isFirstTap ? 'opacity-0' : 'opacity-100'
+        }`}>
+          <div className="text-center px-4 max-w-6xl mx-auto">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white mb-4 md:mb-8 tracking-wider leading-tight" 
+                style={{ 
+                  fontFamily: 'var(--font-comfortaa)',
+                  textShadow: '0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.3)',
+                  letterSpacing: '0.1em',
+                  fontWeight: '300'
+                }}>
+              Welcome to BapBapBapBapBap
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/80 font-light tracking-wide animate-pulse"
+               style={{ 
+                 fontFamily: 'var(--font-comfortaa)',
+                 textShadow: '0 0 20px rgba(255,255,255,0.3)',
+                 fontWeight: '300'
+               }}>
+              Tap the screen to begin
+            </p>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
