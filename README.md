@@ -8,6 +8,19 @@ A modern audio-visual trigger application built with Next.js 15 and PIXI.js. Cre
 
 Experience the interactive audio-visual grid in your browser. Tap anywhere on the screen to trigger animations and sounds!
 
+## 📚 Documentation
+
+**📖 [Complete Documentation →](./docs/README.md)**
+
+| Guide | Description |
+|-------|-------------|
+| **[User Guide](./docs/user-guide.md)** | How to use the interactive experience |
+| **[Admin Guide](./docs/admin-guide.md)** | Managing zones, samples, and settings |
+| **[Installation](./docs/installation.md)** | Local development setup |
+| **[API Reference](./docs/api-reference.md)** | Complete API documentation |
+| **[Animation System](./docs/animations.md)** | Creating custom animations |
+| **[Troubleshooting](./docs/troubleshooting.md)** | Common issues and solutions |
+
 ## ✨ Features
 
 ### 🎨 Dynamic Particle Animations
