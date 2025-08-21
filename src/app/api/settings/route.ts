@@ -4,6 +4,14 @@ import { getTempGlobalScale, setTempGlobalScale } from '@/lib/temp-storage';
 
 export async function GET() {
   try {
+    // First try to ensure the Settings table exists
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "Settings" (
+        "id" INTEGER PRIMARY KEY DEFAULT 1,
+        "globalScale" DOUBLE PRECISION DEFAULT 1.0
+      );
+    `;
+    
     let settings = await prisma.settings.findFirst();
     
     // Create default settings if none exist
@@ -28,6 +36,14 @@ export async function POST(request: Request) {
   const { globalScale } = await request.json();
   
   try {
+    // First try to ensure the Settings table exists
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "Settings" (
+        "id" INTEGER PRIMARY KEY DEFAULT 1,
+        "globalScale" DOUBLE PRECISION DEFAULT 1.0
+      );
+    `;
+    
     const settings = await prisma.settings.upsert({
       where: { id: 1 },
       update: { globalScale },
