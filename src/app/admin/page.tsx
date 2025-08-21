@@ -5,14 +5,14 @@ import { UploadAudio } from '@/components/Admin/UploadAudio';
 export default function AdminPage() {
   const [zones, setZones] = useState<any[]>([]);
   const [animations, setAnimations] = useState<any[]>([]);
-  const [globalScale, setGlobalScale] = useState<number>(2);
-  const [tempGlobalScale, setTempGlobalScale] = useState<number>(2);
+  const [globalScale, setGlobalScale] = useState<number>(1);
+  const [tempGlobalScale, setTempGlobalScale] = useState<number>(1);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetch('/api/config').then(r => r.json()).then(data => {
       setZones(data.zones);
-      const scale = data.globalScale || 2;
+      const scale = data.globalScale || 1;
       setGlobalScale(scale);
       setTempGlobalScale(scale);
     });
@@ -128,7 +128,7 @@ export default function AdminPage() {
                 {saving ? '⏳ Saving...' : hasUnsavedChanges ? '💾 Save Changes' : '✅ Saved'}
               </button>
               <div className="text-xs text-purple-600 max-w-md">
-                Controls how big all animations appear (0.5x = tiny, 2x = default, 5x = huge)
+                Controls how big all animations appear (0.5x = tiny, 1x = default, 5x = huge)
                 {hasUnsavedChanges && <div className="text-orange-600 font-medium">⚠️ You have unsaved changes</div>}
               </div>
             </div>

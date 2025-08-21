@@ -77,7 +77,7 @@ export default function Home() {
         // Use dynamic global scale from settings
         const scaledCfg = {
           ...zone.animationCfg,
-          globalScale: cfg.globalScale || 2
+          globalScale: cfg.globalScale || 1
         };
         console.log('scaledCfg passed to animation:', scaledCfg);
         anim.run({ app: appRef.current, stage: appRef.current.stage, zoneIndex, x, y, cfg: scaledCfg });

@@ -9,7 +9,7 @@ export async function GET() {
   });
   
   // Get global settings with fallback
-  let globalScale = 2.0;
+  let globalScale = 1.0;
   try {
     const settings = await prisma.settings.findFirst();
     if (settings) {

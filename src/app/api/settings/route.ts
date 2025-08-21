@@ -11,7 +11,7 @@ export async function GET() {
       settings = await prisma.settings.create({
         data: {
           id: 1,
-          globalScale: 2.0
+          globalScale: 1.0
         }
       });
     }

@@ -34,5 +34,5 @@ model Preset {
 
 model Settings {
   id          Int   @id @default(1)
-  globalScale Float @default(2.0)
+  globalScale Float @default(1.0)
 }
