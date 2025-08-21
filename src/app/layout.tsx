@@ -21,18 +21,25 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://bapbapbapbapbap.com'),
   title: "BapBapBapBapBap",
   description: "Interactive audio-visual experience - just tap it",
+  icons: {
+    icon: '/icon',
+    apple: '/apple-icon',
+    shortcut: '/icon',
+  },
   openGraph: {
     title: "BapBapBapBapBap",
     description: "Interactive audio-visual experience - just tap it",
     type: "website",
     locale: "en_US",
     siteName: "BapBapBapBapBap",
+    url: 'https://bapbapbapbapbap.com',
     images: [
       {
-        url: '/og-image.png', // Change this to your uploaded image filename
+        url: 'https://bapbapbapbapbap.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'BapBapBapBapBap - just tap it',
+        type: 'image/png',
       },
     ],
   },
@@ -40,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "BapBapBapBapBap",
     description: "Interactive audio-visual experience - just tap it",
-    images: ['/og-image.png'], // Change this to match your uploaded image
+    images: ['https://bapbapbapbapbap.com/og-image.png'],
   },
   robots: {
     index: true,

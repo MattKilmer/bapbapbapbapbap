@@ -2,8 +2,8 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 export const size = {
-  width: 32,
-  height: 32,
+  width: 48,
+  height: 48,
 };
 export const contentType = 'image/png';
 
@@ -24,7 +24,7 @@ export default function Icon() {
         {/* Main "B" */}
         <div
           style={{
-            fontSize: '20px',
+            fontSize: '32px',
             fontWeight: 'bold',
             color: '#ffffff',
             fontFamily: 'system-ui, sans-serif',
@@ -37,12 +37,12 @@ export default function Icon() {
         <div
           style={{
             position: 'absolute',
-            width: '4px',
-            height: '4px',
+            width: '6px',
+            height: '6px',
             borderRadius: '50%',
             background: '#90ee90',
-            bottom: '6px',
-            right: '6px',
+            bottom: '8px',
+            right: '8px',
           }}
         />
       </div>
