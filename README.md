@@ -1,223 +1,89 @@
 # BapBapBapBapBap
 
-A modern audio-visual trigger application built with Next.js 15 and PIXI.js. Create an immersive 4×4 grid of interactive zones that trigger unique particle-based animations paired with custom audio samples.
+An interactive audio-visual trigger application that transforms touch into immersive particle animations and sound. Built with Next.js 15 and PIXI.js.
 
 ## 🚀 Try It Out
 
-## **-> [bapbapbapbapbap.com](https://www.bapbapbapbapbap.com/)**
+# **-> [bapbapbapbapbap.com](https://www.bapbapbapbapbap.com/)**
 
-Experience the interactive audio-visual grid in your browser. Tap anywhere on the screen to trigger animations and sounds!
+Experience the interactive 4×4 grid. Tap anywhere to trigger unique animations paired with custom audio samples.
 
-## 📚 Documentation
+---
 
-**📖 [Complete Documentation →](./docs/README.md)**
+## 📚 Complete Documentation
 
-| Guide | Description |
-|-------|-------------|
-| **[User Guide](./docs/user-guide.md)** | How to use the interactive experience |
-| **[Admin Guide](./docs/admin-guide.md)** | Managing zones, samples, and settings |
-| **[Installation](./docs/installation.md)** | Local development setup |
-| **[API Reference](./docs/api-reference.md)** | Complete API documentation |
-| **[Animation System](./docs/animations.md)** | Creating custom animations |
-| **[Troubleshooting](./docs/troubleshooting.md)** | Common issues and solutions |
+### 🎯 **[→ Full Documentation Hub](./docs/README.md)**
 
-## ✨ Features
+| **Quick Links** | **Description** |
+|-----------------|-----------------|
+| **[🎮 User Guide](./docs/user-guide.md)** | How to use the interactive experience |
+| **[⚙️ Admin Guide](./docs/admin-guide.md)** | Managing zones, samples, and settings |
+| **[🚀 Installation](./docs/installation.md)** | Local development setup |
+| **[🔗 API Reference](./docs/api-reference.md)** | Complete API documentation |
+| **[🎨 Animation System](./docs/animations.md)** | Creating custom animations |
+| **[🛠️ Troubleshooting](./docs/troubleshooting.md)** | Common issues and solutions |
 
-### 🎨 Dynamic Particle Animations
-- **16 unique animations** with advanced particle systems
-- **Swarm**: Flocking behavior with boids algorithm
-- **Mandala**: Multi-layered intricate geometric patterns  
-- **Nebula**: 3D orbital particle system with depth simulation
-- **Waves**: Fluid particle motion with organic flow
-- **Crystal**: Hexagonal formation with realistic shatter physics
-- **Matrix**: Abstract multi-character streams with cyberpunk colors
-- **And 10 more** stunning visual effects
+---
 
-### 🔊 Audio Engine
-- Upload custom audio samples for each zone
-- Configurable gain control per sample
-- Cross-browser audio playback with Tone.js integration
-- Random sample selection for variety
+## ✨ Features Overview
 
-### ⚙️ Admin Interface
-- Intuitive web-based configuration
-- Upload audio files via drag-and-drop
-- Real-time animation parameter tuning
-- Zone activation/deactivation controls
-- Audio preview and management
+### 🎨 **16 Unique Animations**
+Particle-based effects including burst, ripple, mandala, nebula, waves, crystal, matrix, and more.
 
-### 🎯 Interactive Experience
-- **4×4 touch grid** (16 zones total)
-- Invisible interface for clean aesthetics
-- Responsive design for all screen sizes
-- Real-time audio-visual synchronization
+### 🔊 **Audio Engine** 
+Upload custom samples with configurable gain. Cross-browser playback with random selection.
+
+### ⚙️ **Admin Interface**
+Web-based configuration with drag-and-drop uploads and real-time parameter tuning.
+
+### 🎯 **Interactive Grid**
+4×4 touch zones (16 total) with invisible UI for clean aesthetics. Responsive design.
+
+---
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Node.js 18+ 
-- PostgreSQL database
-- Vercel account (for deployment)
+**Prerequisites:** Node.js 18+, PostgreSQL, Vercel account
 
-### Installation
+```bash
+# 1. Clone and install
+git clone https://github.com/MattKilmer/bapbapbapbapbap.git
+cd bapbapbapbapbap
+npm install
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/MattKilmer/bapbapbapbapbap.git
-   cd bapbapbapbapbap
-   ```
+# 2. Configure environment
+cp .env.example .env.local
+# Edit .env.local with your database and Vercel Blob credentials
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+# 3. Set up database
+npx prisma db push
+npx prisma db seed
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Configure your `.env.local`:
-   ```env
-   # Database
-   DATABASE_URL="postgresql://username:password@localhost:5432/bapbapbapbapbap"
-   
-   # Vercel Blob Storage
-   BLOB_READ_WRITE_TOKEN="your_vercel_blob_token"
-   
-   # Admin Authentication
-   ADMIN_SECRET="your_secure_admin_password"
-   ```
-
-4. **Set up the database**
-   ```bash
-   npx prisma db push
-   npx prisma db seed
-   ```
-
-5. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-6. **Open your browser**
-   - Main app: [http://localhost:3000](http://localhost:3000)
-   - Admin panel: [http://localhost:3000/admin](http://localhost:3000/admin)
-
-## 📖 Usage
-
-### Setting Up Zones
-
-1. Navigate to the admin panel at `/admin`
-2. Select a zone to configure
-3. Choose an animation type from the dropdown
-4. Upload audio samples (MP3, WAV, etc.)
-5. Adjust gain levels and animation parameters
-6. Mark zones as active when ready
-
-### Creating Custom Animations
-
-Add new animations by creating files in `src/lib/animations/`:
-
-```typescript
-import { Graphics, Container } from 'pixi.js';
-import type { Anim } from './index';
-
-export const myAnimation: Anim = {
-  key: 'myAnimation',
-  name: 'My Animation',
-  schema: { 
-    speed: { type: 'number', default: 1 },
-    lifeMs: { type: 'number', default: 2000 } 
-  },
-  run: ({ stage, x, y, cfg }) => {
-    // Your animation logic here
-    const container = new Container();
-    // ... create graphics and animations
-    stage.addChild(container);
-  }
-};
+# 4. Start development
+npm run dev
 ```
 
-Then register it in `src/lib/animations/index.ts`.
+**Access:** [http://localhost:3000](http://localhost:3000) (main app) • [http://localhost:3000/admin](http://localhost:3000/admin) (admin panel)
+
+**📖 [→ Detailed Installation Guide](./docs/installation.md)**
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 15, React 18, TypeScript
-- **Graphics**: PIXI.js for high-performance 2D rendering
-- **Audio**: Tone.js + HTML5 Audio API
-- **Database**: PostgreSQL with Prisma ORM
-- **Storage**: Vercel Blob for audio file uploads
-- **Styling**: Tailwind CSS
-- **Deployment**: Vercel
+**Frontend:** Next.js 15, React 18, TypeScript  
+**Graphics:** PIXI.js for high-performance 2D rendering  
+**Audio:** Tone.js + HTML5 Audio API  
+**Database:** PostgreSQL with Prisma ORM  
+**Storage:** Vercel Blob for audio files  
+**Styling:** Tailwind CSS  
+**Deployment:** Vercel  
 
-## 🏗️ Architecture
-
-```
-src/
-├── app/                 # Next.js App Router
-│   ├── admin/          # Admin interface
-│   ├── api/            # API endpoints
-│   └── page.tsx        # Main application
-├── components/         # React components
-│   ├── Admin/          # Admin-specific components
-│   ├── CanvasStage.tsx # PIXI.js canvas wrapper
-│   └── GridOverlay.tsx # Touch interaction layer
-├── lib/
-│   ├── animations/     # Animation definitions
-│   ├── audio/          # Audio engine
-│   └── db.ts          # Database utilities
-└── prisma/
-    ├── schema.prisma   # Database schema
-    └── seed.ts         # Initial data
-```
-
-## 🎮 API Reference
-
-### Zones
-- `GET /api/zones` - List all zones
-- `GET /api/zones/[id]` - Get zone details
-- `POST /api/zones/[id]` - Update zone configuration
-
-### Audio Samples
-- `POST /api/zones/[id]/samples` - Upload audio sample
-- `DELETE /api/samples/[id]` - Delete audio sample
-- `POST /api/upload-token` - Upload file to blob storage
-
-### Configuration
-- `GET /api/config` - Get full application configuration
-- `GET /api/animations` - List available animations
-
-## 🎨 Animation System
-
-The animation system is built on PIXI.js and supports:
-
-- **Particle Physics**: Flocking, orbital mechanics, fluid dynamics
-- **Multi-layered Rendering**: Depth simulation and layered effects
-- **Dynamic Parameters**: Real-time configuration via admin panel
-- **Performance Optimization**: Efficient cleanup and memory management
-- **Extensible Architecture**: Easy to add new animation types
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. **Connect your GitHub repository to Vercel**
-2. **Configure environment variables** in Vercel dashboard
-3. **Set up Vercel Postgres** (or external PostgreSQL)
-4. **Enable Vercel Blob** for file storage
-5. **Deploy automatically** on every push to main
-
-### Manual Deployment
-
-```bash
-npm run build
-npm start
-```
+---
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see the **[Installation Guide](./docs/installation.md)** and **[Animation System](./docs/animations.md)** for development details.
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
@@ -225,25 +91,15 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
-## 📝 License
+---
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 🆘 Support
 
-## 🙏 Acknowledgments
-
-- **PIXI.js** for incredible 2D graphics performance
-- **Vercel** for seamless deployment and hosting
-- **Tone.js** for web audio capabilities
-- **Next.js** for the amazing React framework
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/MattKilmer/bapbapbapbapbap/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/MattKilmer/bapbapbapbapbap/discussions)
-- **Email**: [your-email@example.com](mvkilmer@hotmail.com)
+- **[🛠️ Troubleshooting Guide](./docs/troubleshooting.md)** - Common issues and solutions
+- **[GitHub Issues](https://github.com/MattKilmer/bapbapbapbapbap/issues)** - Report bugs or request features
+- **[GitHub Discussions](https://github.com/MattKilmer/bapbapbapbapbap/discussions)** - Ask questions and share ideas
+- **Email:** mvkilmer@hotmail.com
 
 ---
 
-Built with ❤️ by [MattKilmer](https://github.com/MattKilmer)
-
-*Transform sound into visual magic* ✨
+**Built with ❤️ by [MattKilmer](https://github.com/MattKilmer) • Transform sound into visual magic** ✨
