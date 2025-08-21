@@ -18,6 +18,7 @@ const comfortaa = Comfortaa({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://bapbapbapbapbap.com'),
   title: "BapBapBapBapBap",
   description: "Interactive audio-visual experience - just tap it",
   openGraph: {
@@ -26,11 +27,20 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "BapBapBapBapBap",
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'BapBapBapBapBap - just tap it',
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "BapBapBapBapBap",
     description: "Interactive audio-visual experience - just tap it",
+    images: ['/opengraph-image'],
   },
   robots: {
     index: true,

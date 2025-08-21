@@ -13,7 +13,7 @@ export default async function OpenGraphImage() {
     (
       <div
         style={{
-          background: 'linear-gradient(45deg, #000000, #1a1a1a, #333333)',
+          background: 'linear-gradient(135deg, #000000, #1a1a1a)',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -21,44 +21,17 @@ export default async function OpenGraphImage() {
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          overflow: 'hidden',
         }}
       >
-        {/* Pulsing glow effect background */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: '0',
-            background: 'radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)',
-            animation: 'pulse 2s ease-in-out infinite',
-          }}
-        />
-        
-        {/* Grid pattern overlay */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: '0',
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '150px 150px',
-            opacity: 0.3,
-          }}
-        />
-        
         {/* Main title */}
         <div
           style={{
-            fontSize: '96px',
-            fontWeight: '300',
+            fontSize: '92px',
+            fontWeight: 'bold',
             color: '#ffffff',
             textAlign: 'center',
-            letterSpacing: '0.1em',
-            textShadow: '0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.3)',
-            marginBottom: '40px',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
+            marginBottom: '30px',
+            fontFamily: 'Inter, system-ui, sans-serif',
           }}
         >
           BapBapBapBapBap
@@ -67,41 +40,48 @@ export default async function OpenGraphImage() {
         {/* Subtitle */}
         <div
           style={{
-            fontSize: '36px',
-            fontWeight: '300',
-            color: 'rgba(255,255,255,0.8)',
+            fontSize: '38px',
+            fontWeight: 'normal',
+            color: 'rgba(255,255,255,0.9)',
             textAlign: 'center',
-            letterSpacing: '0.05em',
-            textShadow: '0 0 20px rgba(255,255,255,0.3)',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontFamily: 'Inter, system-ui, sans-serif',
           }}
         >
           just tap it
         </div>
         
-        {/* Decorative particles */}
+        {/* Decorative circles */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '30px',
+            height: '30px',
+            borderRadius: '50%',
+            background: '#90ee90',
+            top: '15%',
+            left: '10%',
+          }}
+        />
         <div
           style={{
             position: 'absolute',
             width: '20px',
             height: '20px',
             borderRadius: '50%',
-            background: '#90ee90',
-            top: '20%',
-            left: '15%',
-            boxShadow: '0 0 20px #90ee90',
+            background: '#87ceeb',
+            top: '25%',
+            right: '15%',
           }}
         />
         <div
           style={{
             position: 'absolute',
-            width: '15px',
-            height: '15px',
+            width: '35px',
+            height: '35px',
             borderRadius: '50%',
-            background: '#87ceeb',
-            top: '30%',
-            right: '20%',
-            boxShadow: '0 0 15px #87ceeb',
+            background: '#ffd700',
+            bottom: '20%',
+            left: '8%',
           }}
         />
         <div
@@ -110,22 +90,9 @@ export default async function OpenGraphImage() {
             width: '25px',
             height: '25px',
             borderRadius: '50%',
-            background: '#ffd700',
-            bottom: '25%',
-            left: '10%',
-            boxShadow: '0 0 25px #ffd700',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            width: '18px',
-            height: '18px',
-            borderRadius: '50%',
             background: '#ff69b4',
-            bottom: '20%',
-            right: '15%',
-            boxShadow: '0 0 18px #ff69b4',
+            bottom: '15%',
+            right: '12%',
           }}
         />
       </div>
