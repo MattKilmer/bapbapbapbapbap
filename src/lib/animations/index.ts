@@ -1,0 +1,43 @@
+import type { Application, Container } from 'pixi.js';
+export type AnimCtx = {
+  app: Application; stage: Container; zoneIndex: number; x: number; y: number; cfg?: any
+};
+export type Anim = {
+  key: string; name: string; schema?: any; run: (ctx: AnimCtx) => void
+};
+
+import { burst } from './burst';
+import { ripple } from './ripple';
+import { confetti } from './confetti';
+import { waves } from './waves';
+import { spiral } from './spiral';
+import { pulse } from './pulse';
+import { lightning } from './lightning';
+import { flower } from './flower';
+import { tornado } from './tornado';
+import { firework } from './firework';
+import { snowflake } from './snowflake';
+import { matrix } from './matrix';
+import { galaxy } from './galaxy';
+import { geometric } from './geometric';
+import { plasma } from './plasma';
+import { crystal } from './crystal';
+
+export const animations: Record<string, Anim> = {
+  [burst.key]: burst,
+  [ripple.key]: ripple,
+  [confetti.key]: confetti,
+  [waves.key]: waves,
+  [spiral.key]: spiral,
+  [pulse.key]: pulse,
+  [lightning.key]: lightning,
+  [flower.key]: flower,
+  [tornado.key]: tornado,
+  [firework.key]: firework,
+  [snowflake.key]: snowflake,
+  [matrix.key]: matrix,
+  [galaxy.key]: galaxy,
+  [geometric.key]: geometric,
+  [plasma.key]: plasma,
+  [crystal.key]: crystal,
+};
