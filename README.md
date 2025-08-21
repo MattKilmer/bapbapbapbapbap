@@ -12,8 +12,6 @@ Experience the interactive 4×4 grid. Tap anywhere to trigger unique animations 
 
 ## 📚 Complete Documentation
 
-### 🎯 **[→ Full Documentation Hub](./docs/README.md)**
-
 | **Quick Links** | **Description** |
 |-----------------|-----------------|
 | **[🎮 User Guide](./docs/user-guide.md)** | How to use the interactive experience |
