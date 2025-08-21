@@ -400,17 +400,45 @@ data.zones.forEach(zone => {
 
 ## 🚀 Rate Limiting
 
-### Current Limits
-- **Upload endpoints**: 10 requests/minute per IP
-- **General API**: 100 requests/minute per IP
-- **Admin endpoints**: 50 requests/minute per session
+### Current Limits ✅ **IMPLEMENTED**
+- **Upload endpoints**: 10 requests/minute per IP (`/api/upload-token`)
+- **Admin endpoints**: 50 requests/minute per IP (`/api/settings`, `/api/zones/*/samples`)
+- **General API**: 100 requests/minute per IP (planned for future endpoints)
 
-### Headers
-Rate limit information is included in response headers:
+### Rate Limited Endpoints
+| Endpoint | Method | Limit | Window | Status |
+|----------|---------|-------|--------|--------|
+| `/api/upload-token` | POST | 10 req/min | 60s | ✅ Active |
+| `/api/settings` | POST | 50 req/min | 60s | ✅ Active |
+| `/api/zones/[id]/samples` | POST | 50 req/min | 60s | ✅ Active |
+
+### Response Headers
+Rate limit information is included in all rate-limited endpoints:
 ```
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 95
-X-RateLimit-Reset: 1640995200
+X-RateLimit-Limit: 50
+X-RateLimit-Remaining: 23
+X-RateLimit-Reset: 1703123456789
+```
+
+### Rate Limit Exceeded (429)
+When rate limit is exceeded, you'll receive:
+```json
+{
+  "error": "Too many admin requests. Please slow down."
+}
+```
+
+**HTTP Status**: `429 Too Many Requests`
+
+### Testing Rate Limits
+```bash
+# Test settings endpoint rate limit (50 req/min)
+for i in {1..55}; do
+  curl -X POST http://localhost:3000/api/settings \
+    -H "Content-Type: application/json" \
+    -d '{"globalScale": 1.0}' \
+    -w "Status: %{http_code}, Remaining: %{header_json}[x-ratelimit-remaining]\n"
+done
 ```
 
 ## 🔐 Security Considerations

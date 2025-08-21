@@ -1,7 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { put } from '@vercel/blob';
+import { uploadRateLimit, addRateLimitHeaders } from '@/lib/rate-limit';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = await uploadRateLimit(req);
+  
+  if (!rateLimitResult.success) {
+    const response = NextResponse.json(
+      { error: rateLimitResult.error },
+      { status: 429 }
+    );
+    return addRateLimitHeaders(response, rateLimitResult);
+  }
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
@@ -19,15 +30,18 @@ export async function POST(req: Request) {
 
     console.log('Upload completed:', { url: blob.url });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       url: blob.url,
       filename: file.name
     });
+    
+    return addRateLimitHeaders(response, rateLimitResult);
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       { error: 'Failed to upload file', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
+    return addRateLimitHeaders(response, rateLimitResult);
   }
 }
