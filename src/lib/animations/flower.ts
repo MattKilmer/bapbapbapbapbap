@@ -8,7 +8,7 @@ export const flower: Anim = {
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
     const petals = cfg?.petals ?? 8;
-    const petalGraphics = [];
+    const petalGraphics: any[] = [];
     
     for (let i = 0; i < petals; i++) {
       const g = new Graphics();

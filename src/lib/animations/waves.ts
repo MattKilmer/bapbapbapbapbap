@@ -19,7 +19,7 @@ export const waves: Anim = {
     
     c.x = x; c.y = y; stage.addChild(c);
     
-    const waves = [];
+    const waves: any[] = [];
     const waveCount = 3;
     const colors = [0x00ccff, 0x0099cc, 0x006699];
     

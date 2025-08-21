@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 
-export function isAuthenticated(): boolean {
-  const headersList = headers();
+export async function isAuthenticated(): Promise<boolean> {
+  const headersList = await headers();
   const authorization = headersList.get("authorization");
   
   if (!authorization) return false;
@@ -19,8 +19,8 @@ export function isAuthenticated(): boolean {
   }
 }
 
-export function requireAuth() {
-  if (!isAuthenticated()) {
+export async function requireAuth() {
+  if (!(await isAuthenticated())) {
     return new Response("Unauthorized", {
       status: 401,
       headers: {

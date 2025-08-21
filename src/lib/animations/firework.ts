@@ -7,7 +7,7 @@ export const firework: Anim = {
   schema: { sparks: { type: 'number', default: 16 }, lifeMs: { type: 'number', default: 2000 } },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const sparks = [];
+    const sparks: any[] = [];
     const sparkCount = cfg?.sparks ?? 16;
     const colors = [0xff4757, 0x3742fa, 0x2ed573, 0xffa502, 0xff6b6b];
     

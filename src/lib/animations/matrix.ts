@@ -9,10 +9,10 @@ export const matrix: Anim = {
     const c = new Container();
     const columns = cfg?.columns ?? 8;
     const chars = '0123456789ABCDEF';
-    const streams = [];
+    const streams: any[] = [];
     
     for (let i = 0; i < columns; i++) {
-      const stream = [];
+      const stream: any[] = [];
       const streamLength = 5 + Math.random() * 8;
       
       for (let j = 0; j < streamLength; j++) {
@@ -50,14 +50,14 @@ export const matrix: Anim = {
       
       streams.forEach((stream) => {
         if (elapsed > stream.delay) {
-          stream.chars.forEach((char) => {
+          stream.chars.forEach((char: any) => {
             char.y += stream.speed;
           });
         }
         
         // Fade out
         if (t > 0.7) {
-          stream.chars.forEach((char) => {
+          stream.chars.forEach((char: any) => {
             char.alpha *= 0.95;
           });
         }

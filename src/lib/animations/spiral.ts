@@ -7,7 +7,7 @@ export const spiral: Anim = {
   schema: { turns: { type: 'number', default: 3 }, lifeMs: { type: 'number', default: 800 } },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const particles = [];
+    const particles: any[] = [];
     
     for (let i = 0; i < 12; i++) {
       const g = new Graphics();

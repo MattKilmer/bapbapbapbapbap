@@ -7,7 +7,7 @@ export const crystal: Anim = {
   schema: { shards: { type: 'number', default: 8 }, lifeMs: { type: 'number', default: 1400 } },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const shards = [];
+    const shards: any[] = [];
     const shardCount = cfg?.shards ?? 8;
     const crystalColors = [0x00ffff, 0x40e0d0, 0x87ceeb, 0xb0e0e6, 0xe0ffff];
     

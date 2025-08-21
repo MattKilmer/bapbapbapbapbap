@@ -7,7 +7,7 @@ export const galaxy: Anim = {
   schema: { stars: { type: 'number', default: 30 }, lifeMs: { type: 'number', default: 2500 } },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const stars = [];
+    const stars: any[] = [];
     const starCount = cfg?.stars ?? 30;
     
     for (let i = 0; i < starCount; i++) {

@@ -7,7 +7,7 @@ export const tornado: Anim = {
   schema: { particles: { type: 'number', default: 20 }, lifeMs: { type: 'number', default: 1500 } },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const particles = [];
+    const particles: any[] = [];
     const particleCount = cfg?.particles ?? 20;
     
     for (let i = 0; i < particleCount; i++) {

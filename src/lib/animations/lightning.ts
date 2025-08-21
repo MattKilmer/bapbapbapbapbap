@@ -15,7 +15,7 @@ export const lightning: Anim = {
       const length = 40 + Math.random() * 40;
       
       // Create zigzag lightning path
-      const points = [];
+      const points: number[][] = [];
       for (let j = 0; j <= 10; j++) {
         const dist = (j / 10) * length;
         const zigzag = (Math.random() - 0.5) * 20;

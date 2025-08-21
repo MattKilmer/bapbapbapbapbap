@@ -7,7 +7,7 @@ export const pulse: Anim = {
   schema: { rings: { type: 'number', default: 4 }, lifeMs: { type: 'number', default: 1000 } },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const rings = [];
+    const rings: any[] = [];
     const ringCount = cfg?.rings ?? 4;
     
     for (let i = 0; i < ringCount; i++) {

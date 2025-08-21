@@ -7,7 +7,7 @@ export const geometric: Anim = {
   schema: { shapes: { type: 'number', default: 5 }, lifeMs: { type: 'number', default: 1600 } },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const shapes = [];
+    const shapes: any[] = [];
     const shapeCount = cfg?.shapes ?? 5;
     const shapeTypes = ['triangle', 'square', 'pentagon', 'hexagon'];
     const colors = [0xff6b6b, 0x4ecdc4, 0x45b7d1, 0xf9ca24, 0xf0932b];

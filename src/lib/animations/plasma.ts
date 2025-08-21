@@ -7,7 +7,7 @@ export const plasma: Anim = {
   schema: { orbs: { type: 'number', default: 12 }, lifeMs: { type: 'number', default: 2200 } },
   run: ({ stage, x, y, cfg }) => {
     const c = new Container();
-    const orbs = [];
+    const orbs: any[] = [];
     const orbCount = cfg?.orbs ?? 12;
     
     for (let i = 0; i < orbCount; i++) {
