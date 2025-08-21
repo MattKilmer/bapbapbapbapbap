@@ -4,6 +4,12 @@ A modern audio-visual trigger application built with Next.js 15 and PIXI.js. Cre
 
 ![BapBapBapBapBap Demo](https://via.placeholder.com/800x400/000000/FFFFFF?text=BapBapBapBapBap%20Demo)
 
+## 🚀 Try It Out
+
+**[Live Demo: bapbapbapbapbap.com](https://www.bapbapbapbapbap.com/)**
+
+Experience the interactive audio-visual grid in your browser. Tap anywhere on the screen to trigger animations and sounds!
+
 ## ✨ Features
 
 ### 🎨 Dynamic Particle Animations
