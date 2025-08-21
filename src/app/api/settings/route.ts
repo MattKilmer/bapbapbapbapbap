@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db as prisma } from '@/lib/db';
 import { getTempGlobalScale, setTempGlobalScale } from '@/lib/temp-storage';
+import { adminRateLimit, addRateLimitHeaders } from '@/lib/rate-limit';
 
 export async function GET() {
   try {
@@ -32,7 +33,18 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = await adminRateLimit(request);
+  
+  if (!rateLimitResult.success) {
+    const response = NextResponse.json(
+      { error: rateLimitResult.error },
+      { status: 429 }
+    );
+    return addRateLimitHeaders(response, rateLimitResult);
+  }
+
   const { globalScale } = await request.json();
   
   try {
@@ -50,12 +62,14 @@ export async function POST(request: Request) {
       create: { id: 1, globalScale }
     });
     
-    return NextResponse.json(settings);
+    const response = NextResponse.json(settings);
+    return addRateLimitHeaders(response, rateLimitResult);
   } catch (error) {
     console.error('Settings POST error (table may not exist yet):', error);
     // Use temporary storage as fallback
     setTempGlobalScale(globalScale);
     console.log('Saved to temp storage:', globalScale);
-    return NextResponse.json({ id: 1, globalScale }, { status: 200 });
+    const response = NextResponse.json({ id: 1, globalScale }, { status: 200 });
+    return addRateLimitHeaders(response, rateLimitResult);
   }
 }

@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db as prisma } from '@/lib/db';
+import { adminRateLimit, addRateLimitHeaders } from '@/lib/rate-limit';
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -11,7 +12,18 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   return NextResponse.json({ samples });
 }
 
-export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  // Apply rate limiting
+  const rateLimitResult = await adminRateLimit(req);
+  
+  if (!rateLimitResult.success) {
+    const response = NextResponse.json(
+      { error: rateLimitResult.error },
+      { status: 429 }
+    );
+    return addRateLimitHeaders(response, rateLimitResult);
+  }
+
   try {
     const { url, label, gainDb } = await req.json();
     const { id } = await params;
@@ -28,12 +40,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     });
     
     console.log('Sample created:', sample);
-    return NextResponse.json(sample);
+    const response = NextResponse.json(sample);
+    return addRateLimitHeaders(response, rateLimitResult);
   } catch (error) {
     console.error('Error creating sample:', error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       { error: 'Failed to create sample', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
+    return addRateLimitHeaders(response, rateLimitResult);
   }
 }
