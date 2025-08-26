@@ -11,7 +11,7 @@ export function CanvasStage() {
     const app = new Application();
     let mounted = true;
     
-    app.init({ background: '#000000', resizeTo: window, antialias: true }).then(() => {
+    app.init({ background: '#000000', antialias: true }).then(() => {
       // Check if component is still mounted and ref is valid
       if (!mounted || !ref.current) {
         app.destroy();
@@ -19,6 +19,29 @@ export function CanvasStage() {
       }
       
       ref.current.appendChild(app.canvas);
+      
+      // Set up manual resize handling after initialization is complete
+      const handleResize = () => {
+        if (mounted && app.canvas && !app.destroyed) {
+          try {
+            app.renderer.resize(window.innerWidth, window.innerHeight);
+          } catch (error) {
+            console.warn('Error resizing PIXI app:', error);
+          }
+        }
+      };
+      
+      // Initial resize
+      handleResize();
+      
+      // Listen for window resize events
+      window.addEventListener('resize', handleResize);
+      
+      // Store resize cleanup function
+      (app as any).__resizeCleanup = () => {
+        window.removeEventListener('resize', handleResize);
+      };
+      
       (window as any).__pixiApp = app; // simple sharing
     }).catch((error) => {
       console.error('Failed to initialize PIXI app:', error);
@@ -29,6 +52,10 @@ export function CanvasStage() {
     
     return () => {
       mounted = false;
+      // Clean up resize listener
+      if ((app as any).__resizeCleanup) {
+        (app as any).__resizeCleanup();
+      }
       // Clear the global reference
       if ((window as any).__pixiApp === app) {
         (window as any).__pixiApp = null;

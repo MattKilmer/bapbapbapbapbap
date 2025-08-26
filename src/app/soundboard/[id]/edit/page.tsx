@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { UploadAudio } from '@/components/Admin/UploadAudio';
 import { CopyLinkButton } from '@/components/CopyLinkButton';
+import { ToggleSwitch } from '@/components/ToggleSwitch';
 
 interface Soundboard {
   id: string;
@@ -189,34 +190,26 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
                 <p className="text-gray-400">{soundboard.description}</p>
               )}
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <Link 
                 href={`/play/${soundboard.id}`}
-                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-500 transition-colors"
+                className="px-3 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-500 transition-colors text-center text-sm sm:text-base font-medium"
               >
-                ▶ Test Soundboard
+                <span className="sm:hidden">▶</span>
+                <span className="hidden sm:inline">▶ Test Soundboard</span>
               </Link>
               <CopyLinkButton 
                 soundboardId={soundboard.id} 
+                size="sm"
+              />
+              <ToggleSwitch
+                enabled={soundboard.isPublic}
+                onToggle={toggleVisibility}
+                disabled={updatingVisibility}
+                enabledLabel="Public"
+                disabledLabel="Private"
                 size="md"
               />
-              <button
-                onClick={toggleVisibility}
-                disabled={updatingVisibility}
-                className={`px-4 py-2 rounded transition-colors font-medium ${
-                  soundboard.isPublic
-                    ? 'bg-orange-600 text-white hover:bg-orange-500'
-                    : 'bg-blue-600 text-white hover:bg-blue-500'
-                } ${updatingVisibility ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {updatingVisibility ? (
-                  '⏳ Updating...'
-                ) : soundboard.isPublic ? (
-                  '👁️ Hide from Explore'
-                ) : (
-                  '🔍 Show in Explore'
-                )}
-              </button>
             </div>
           </div>
         </div>

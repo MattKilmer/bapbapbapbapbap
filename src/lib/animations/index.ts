@@ -6,6 +6,11 @@ export type Anim = {
   key: string; name: string; schema?: any; run: (ctx: AnimCtx) => void
 };
 
+// Utility function to check if PIXI objects are still valid
+export function isValidPixiContext(app: Application, stage: Container): boolean {
+  return app && app.renderer && stage && !stage.destroyed;
+}
+
 import { burst } from './burst';
 import { ripple } from './ripple';
 import { confetti } from './confetti';

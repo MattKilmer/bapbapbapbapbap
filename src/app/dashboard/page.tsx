@@ -204,42 +204,38 @@ export default function Dashboard() {
                       <span>{soundboard.plays} plays</span>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                      <div className="flex items-center gap-2 flex-1">
-                        <Link
-                          href={`/play/${soundboard.id}`}
-                          className="flex-1 bg-emerald-600 text-white py-2 px-3 sm:px-4 rounded text-center hover:bg-emerald-500 transition-colors text-sm whitespace-nowrap"
-                        >
-                          <span className="sm:hidden">▶</span>
-                          <span className="hidden sm:inline">▶ Play</span>
-                        </Link>
-                        <Link
-                          href={`/soundboard/${soundboard.id}/edit`}
-                          className="flex-1 bg-blue-600 text-white py-2 px-3 sm:px-4 rounded text-center hover:bg-blue-500 transition-colors text-sm whitespace-nowrap"
-                        >
-                          <span className="sm:hidden">⚙️</span>
-                          <span className="hidden sm:inline">⚙️ Edit</span>
-                        </Link>
-                      </div>
-                      <div className="flex items-center gap-2 justify-end sm:justify-start">
-                        <CopyLinkButton 
-                          soundboardId={soundboard.id} 
-                          variant="icon"
-                          size="sm"
-                        />
-                        <button
-                          onClick={() => deleteSoundboard(soundboard.id, soundboard.name)}
-                          disabled={deleting === soundboard.id}
-                          className={`px-3 py-2 rounded text-sm transition-colors ${
-                            deleting === soundboard.id
-                              ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                              : 'bg-red-600 text-white hover:bg-red-500'
-                          }`}
-                          title="Delete soundboard"
-                        >
-                          {deleting === soundboard.id ? '⏳' : '🗑️'}
-                        </button>
-                      </div>
+                    <div className="flex flex-row items-center gap-2">
+                      <Link
+                        href={`/play/${soundboard.id}`}
+                        className="flex-1 bg-emerald-600 text-white py-2.5 px-3 rounded text-center hover:bg-emerald-500 transition-colors text-sm font-medium"
+                      >
+                        <span className="md:hidden">▶</span>
+                        <span className="hidden md:inline">▶ Play</span>
+                      </Link>
+                      <Link
+                        href={`/soundboard/${soundboard.id}/edit`}
+                        className="flex-1 bg-blue-600 text-white py-2.5 px-3 rounded text-center hover:bg-blue-500 transition-colors text-sm font-medium"
+                      >
+                        <span className="md:hidden">⚙️</span>
+                        <span className="hidden md:inline">⚙️ Edit</span>
+                      </Link>
+                      <CopyLinkButton 
+                        soundboardId={soundboard.id} 
+                        variant="icon"
+                        size="sm"
+                      />
+                      <button
+                        onClick={() => deleteSoundboard(soundboard.id, soundboard.name)}
+                        disabled={deleting === soundboard.id}
+                        className={`px-3 py-2.5 rounded text-sm transition-colors font-medium ${
+                          deleting === soundboard.id
+                            ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                            : 'bg-red-600 text-white hover:bg-red-500'
+                        }`}
+                        title="Delete soundboard"
+                      >
+                        {deleting === soundboard.id ? '⏳' : '🗑️'}
+                      </button>
                     </div>
                   </div>
                 </div>

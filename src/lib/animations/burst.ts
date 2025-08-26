@@ -1,11 +1,15 @@
 import { Graphics, Container } from 'pixi.js';
 import type { Anim } from './index';
+import { isValidPixiContext } from './index';
 
 export const burst: Anim = {
   key: 'burst',
   name: 'Burst',
   schema: { radius: { type: 'number', default: 60 }, lifeMs: { type: 'number', default: 600 } },
-  run: ({ stage, x, y, cfg }) => {
+  run: ({ app, stage, x, y, cfg }) => {
+    // Check if PIXI context is valid before creating animation
+    if (!isValidPixiContext(app, stage)) return;
+    
     const c = new Container();
     const g = new Graphics();
     const globalScale = cfg?.globalScale ?? 1;
@@ -14,6 +18,12 @@ export const burst: Anim = {
     c.x = x; c.y = y; c.addChild(g); stage.addChild(c);
     const start = performance.now();
     const tick = () => {
+      // Check if objects are still valid before updating
+      if (!isValidPixiContext(app, stage) || c.destroyed) {
+        if (!c.destroyed) c.destroy();
+        return;
+      }
+      
       const t = (performance.now() - start) / (cfg?.lifeMs ?? 600);
       g.scale.set((1 + t) * globalScale);
       g.alpha = Math.max(0, 0.8 - t);
