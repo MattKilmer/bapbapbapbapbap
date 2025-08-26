@@ -19,13 +19,19 @@ export const burst: Anim = {
     const start = performance.now();
     const tick = () => {
       // Only check if container is destroyed (lightweight check)
-      if (c.destroyed) return;
+      if (c.destroyed) {
+        app.ticker.remove(tick);
+        return;
+      }
       
       const t = (performance.now() - start) / (cfg?.lifeMs ?? 600);
       g.scale.set((1 + t) * globalScale);
       g.alpha = Math.max(0, 0.8 - t);
-      if (t < 1) requestAnimationFrame(tick); else c.destroy();
+      if (t >= 1) {
+        c.destroy();
+        app.ticker.remove(tick);
+      }
     };
-    requestAnimationFrame(tick);
+    app.ticker.add(tick);
   }
 };
