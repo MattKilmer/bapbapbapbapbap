@@ -93,16 +93,6 @@ export default function Home() {
       
       {/* Playing Area Container */}
       <div className="fixed top-14 left-0 right-0 bottom-0">
-        {/* Pulsing glow border */}
-        <div className="absolute inset-0 pointer-events-none z-40">
-          <div className="absolute inset-0" 
-               style={{
-                 animation: 'pulse-glow 5s ease-in-out infinite',
-                 margin: '0',
-                 boxSizing: 'border-box'
-               }}>
-          </div>
-        </div>
         <CanvasStage />
         <GridOverlay onTap={onTap} zones={cfg?.zones} />
       </div>
