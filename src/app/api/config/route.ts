@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db as prisma } from '@/lib/db';
-import { getTempGlobalScale } from '@/lib/temp-storage';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const soundboardId = searchParams.get('soundboardId');
   
-  let zones;
+  let zones: any[] = [];
   let globalScale = 1.0;
-  let soundboard = null;
+  let soundboard: any = null;
 
   if (soundboardId) {
     // Load specific soundboard

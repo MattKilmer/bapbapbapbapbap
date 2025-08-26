@@ -5,7 +5,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { db as prisma } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 
-const providers = [
+const providers: any[] = [
   CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -77,6 +77,5 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/auth/signin',
-    signUp: '/auth/signup',
   },
 };
