@@ -11,6 +11,18 @@ export function isValidPixiContext(app: Application, stage: Container): boolean 
   return app && app.renderer && stage && !stage.destroyed;
 }
 
+// Mobile detection and performance scaling utility
+export function getMobilePerformanceConfig() {
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+  return {
+    isMobile,
+    // Reduce particle counts and complexity on mobile
+    particleScale: isMobile ? 0.3 : 1.0,
+    complexityScale: isMobile ? 0.4 : 1.0,
+    maxParticles: isMobile ? 20 : 120
+  };
+}
+
 import { burst } from './burst';
 import { ripple } from './ripple';
 import { confetti } from './confetti';

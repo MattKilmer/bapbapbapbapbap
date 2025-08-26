@@ -11,7 +11,13 @@ export function CanvasStage() {
     const app = new Application();
     let mounted = true;
     
-    app.init({ background: '#000000', antialias: true }).then(() => {
+    // Mobile-optimized PIXI.js settings
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    app.init({ 
+      background: '#000000', 
+      antialias: !isMobile, // Disable antialias on mobile for performance
+      powerPreference: isMobile ? 'low-power' : 'high-performance'
+    }).then(() => {
       // Check if component is still mounted and ref is valid
       if (!mounted || !ref.current) {
         try {
@@ -28,7 +34,12 @@ export function CanvasStage() {
       const handleResize = () => {
         if (mounted && app.canvas && app.renderer) {
           try {
-            app.renderer.resize(window.innerWidth, window.innerHeight);
+            // Calculate exact container dimensions (viewport - nav height)
+            // Container is "fixed top-14 left-0 right-0 bottom-0" which equals viewport - 56px height
+            const navHeight = 56; // top-14 = 3.5rem = 56px
+            const containerWidth = window.innerWidth;
+            const containerHeight = window.innerHeight - navHeight;
+            app.renderer.resize(containerWidth, containerHeight);
           } catch (error) {
             console.warn('Error resizing PIXI app:', error);
           }
