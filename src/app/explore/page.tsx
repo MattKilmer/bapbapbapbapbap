@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { CopyLinkButton } from '@/components/CopyLinkButton';
+import { Navigation } from '@/components/Navigation';
 
 interface Soundboard {
   id: string;
@@ -66,7 +67,9 @@ export default function Explore() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white pt-16">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gray-950 text-white pt-16">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Explore Soundboards</h1>
@@ -236,5 +239,6 @@ export default function Explore() {
         )}
       </div>
     </div>
+    </>
   );
 }

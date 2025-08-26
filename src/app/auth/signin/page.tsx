@@ -5,6 +5,7 @@ import { signIn, getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Navigation } from '@/components/Navigation';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -45,7 +46,9 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
+    <>
+      <Navigation />
+      <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-4">
@@ -157,5 +160,6 @@ export default function SignIn() {
         </div>
       </div>
     </div>
+    </>
   );
 }

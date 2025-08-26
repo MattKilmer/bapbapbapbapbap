@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Navigation } from '@/components/Navigation';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -14,7 +15,9 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950">
+    <>
+      <Navigation />
+      <div className="min-h-screen flex items-center justify-center bg-gray-950">
       <form onSubmit={handleSubmit} className="space-y-4 bg-gray-800 p-8 rounded-lg border border-gray-700">
         <h1 className="text-2xl font-bold text-white">Admin Login</h1>
         <input
@@ -33,5 +36,6 @@ export default function AdminLogin() {
         </button>
       </form>
     </div>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { UploadAudio } from '@/components/Admin/UploadAudio';
 import { CopyLinkButton } from '@/components/CopyLinkButton';
 import { ToggleSwitch } from '@/components/ToggleSwitch';
+import { Navigation } from '@/components/Navigation';
 
 interface Soundboard {
   id: string;
@@ -253,8 +254,10 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
 
 
   return (
-    <div className="p-4 bg-gray-950 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <>
+      <Navigation />
+      <div className="p-4 bg-gray-950 min-h-screen pt-16">
+        <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <Link 
             href="/dashboard" 
@@ -461,5 +464,6 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
         </div>
       </div>
     </div>
+    </>
   );
 }

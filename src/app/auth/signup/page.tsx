@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Navigation } from '@/components/Navigation';
 
 export default function SignUp() {
   const [name, setName] = useState('');
@@ -71,7 +72,9 @@ export default function SignUp() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
+      <>
+        <Navigation />
+        <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
         <div className="max-w-md w-full text-center">
           <div className="bg-gray-800 p-8 rounded-lg border border-gray-700">
             <div className="text-green-400 text-6xl mb-4">✓</div>
@@ -81,11 +84,14 @@ export default function SignUp() {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
+    <>
+      <Navigation />
+      <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-4">
@@ -227,5 +233,6 @@ export default function SignUp() {
         </div>
       </div>
     </div>
+    </>
   );
 }

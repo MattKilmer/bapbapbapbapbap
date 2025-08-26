@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { UploadAudio } from '@/components/Admin/UploadAudio';
+import { Navigation } from '@/components/Navigation';
 
 export default function AdminPage() {
   const [zones, setZones] = useState<any[]>([]);
@@ -74,8 +75,10 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="p-4 bg-gray-950 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <>
+      <Navigation />
+      <div className="p-4 bg-gray-950 min-h-screen pt-16">
+        <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-white mb-2">Audio Zones Admin</h1>
           <p className="text-gray-300">Manage your 4×4 audio trigger grid. Upload samples, configure animations, and test your zones.</p>
@@ -209,5 +212,6 @@ export default function AdminPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

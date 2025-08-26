@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { Navigation } from '@/components/Navigation';
 
 export default function NewSoundboard() {
   const { data: session, status } = useSession();
@@ -67,8 +68,10 @@ export default function NewSoundboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      <div className="container mx-auto px-4 py-8">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gray-950 text-white pt-16">
+        <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
             <Link 
@@ -193,5 +196,6 @@ export default function NewSoundboard() {
         </div>
       </div>
     </div>
+    </>
   );
 }
