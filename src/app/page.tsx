@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CanvasStage } from '@/components/CanvasStage';
 import { GridOverlay } from '@/components/GridOverlay';
+import { Navigation } from '@/components/Navigation';
 import { Application } from 'pixi.js';
 import { animations } from '@/lib/animations';
 import { play } from '@/lib/audio/engine';
@@ -89,8 +90,9 @@ export default function Home() {
 
   return (
     <main className="fixed inset-0 bg-black text-white">
+      <Navigation />
       {/* Pulsing glow border */}
-      <div className="fixed inset-0 pointer-events-none z-50">
+      <div className="fixed inset-0 pointer-events-none z-40">
         <div className="absolute inset-0" 
              style={{
                animation: 'pulse-glow 5s ease-in-out infinite',
@@ -104,7 +106,7 @@ export default function Home() {
       
       {/* Welcome Message */}
       {showWelcome && (
-        <div className={`fixed inset-0 flex items-center justify-center z-40 pointer-events-none transition-opacity duration-1000 ${
+        <div className={`fixed inset-0 flex items-center justify-center z-30 pointer-events-none transition-opacity duration-1000 ${
           !isFirstTap ? 'opacity-0' : 'opacity-100'
         }`}>
           <div className="text-center px-4 max-w-6xl mx-auto">

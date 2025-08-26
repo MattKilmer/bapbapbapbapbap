@@ -7,19 +7,96 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// NextAuth.js models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // For email/password auth
+  role          UserRole  @default(USER)
+  accounts      Account[]
+  sessions      Session[]
+  soundboards   Soundboard[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum UserRole {
+  USER
+  ARTIST
+  ADMIN
+}
+
+model Soundboard {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isPublic    Boolean  @default(false)
+  isPremium   Boolean  @default(false)
+  price       Float?
+  slug        String?  @unique // For custom URLs
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  zones       Zone[]
+  plays       Int      @default(0)
+  likes       Int      @default(0)
+  globalScale Float    @default(1.0) // Per-soundboard setting
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Zone {
-  id           Int     @id
-  label        String  @default("")
-  animationKey String  @default("burst")
+  id           Int         @id
+  soundboardId String?
+  soundboard   Soundboard? @relation(fields: [soundboardId], references: [id], onDelete: Cascade)
+  label        String      @default("")
+  animationKey String      @default("burst")
   animationCfg Json?
-  isActive     Boolean @default(true)
+  isActive     Boolean     @default(true)
   samples      Sample[]
 }
 
 model Sample {
   id        String   @id @default(cuid())
   zoneId    Int
-  zone      Zone     @relation(fields: [zoneId], references: [id])
+  zone      Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
   url       String
   label     String   @default("")
   gainDb    Float    @default(0)
@@ -32,6 +109,7 @@ model Preset {
   createdAt DateTime @default(now())
 }
 
+// Global app settings (keep for admin)
 model Settings {
   id          Int   @id @default(1)
   globalScale Float @default(1.0)
