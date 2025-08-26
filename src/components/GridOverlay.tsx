@@ -9,14 +9,14 @@ export function GridOverlay({ onTap, zones }: { onTap: (zone: number, x: number,
       const x = e.clientX - r.left, y = e.clientY - r.top;
       const col = Math.floor((x / r.width) * 4);
       const row = Math.floor((y / r.height) * 4);
-      onTap(row * 4 + col, e.clientX, e.clientY);
+      onTap(row * 4 + col, x, y);
     };
     el.addEventListener('pointerdown', handler);
     return () => el.removeEventListener('pointerdown', handler);
   }, [onTap]);
 
   return (
-    <div id="tap-overlay" className="fixed inset-0 touch-none">
+    <div id="tap-overlay" className="absolute inset-0 touch-none">
     </div>
   );
 }

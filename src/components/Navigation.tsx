@@ -17,6 +17,7 @@ export function Navigation() {
             width={300}
             height={80}
             className="h-12 w-auto sm:h-14"
+            style={{ transform: 'translate(5%, -10%)' }}
             priority
           />
           <div className="text-gray-400 text-xs sm:text-sm font-light hidden xs:block">Just tap it</div>

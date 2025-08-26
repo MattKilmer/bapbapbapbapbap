@@ -89,14 +89,17 @@ export default function SignUp() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            <Image
-              src="/logo-small.png"
-              alt="BapBapBapBapBap"
-              width={300}
-              height={80}
-              className="w-auto h-16"
-              priority
-            />
+            <Link href="/">
+              <Image
+                src="/logo-small.png"
+                alt="BapBapBapBapBap"
+                width={300}
+                height={80}
+                className="w-auto h-48 cursor-pointer hover:opacity-80 transition-opacity"
+                style={{ transform: 'translate(5%, -10%)' }}
+                priority
+              />
+            </Link>
           </div>
           <p className="text-gray-300 text-lg mb-8">Just tap it</p>
           <h2 className="text-2xl font-semibold text-white">Create your account</h2>

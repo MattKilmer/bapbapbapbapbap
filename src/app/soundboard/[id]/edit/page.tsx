@@ -46,6 +46,10 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
   const [soundboardId, setSoundboardId] = useState<string>('');
   const [saving, setSaving] = useState(false);
   const [updatingVisibility, setUpdatingVisibility] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const [editingDescription, setEditingDescription] = useState(false);
+  const [tempName, setTempName] = useState('');
+  const [tempDescription, setTempDescription] = useState('');
 
   useEffect(() => {
     params.then(({ id }) => {
@@ -152,6 +156,82 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
     }
   };
 
+  const startEditingName = () => {
+    if (!soundboard) return;
+    setTempName(soundboard.name);
+    setEditingName(true);
+  };
+
+  const startEditingDescription = () => {
+    if (!soundboard) return;
+    setTempDescription(soundboard.description || '');
+    setEditingDescription(true);
+  };
+
+  const saveName = async () => {
+    if (!soundboard || tempName.trim() === '') return;
+
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/soundboards/${soundboardId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: tempName.trim() })
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        setSoundboard(prev => prev ? { ...prev, name: result.soundboard.name } : null);
+        setEditingName(false);
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to update name');
+      }
+    } catch (error) {
+      console.error('Failed to update name:', error);
+      alert('Failed to update name - please try again');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const saveDescription = async () => {
+    if (!soundboard) return;
+
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/soundboards/${soundboardId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: tempDescription.trim() })
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        setSoundboard(prev => prev ? { ...prev, description: result.soundboard.description } : null);
+        setEditingDescription(false);
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to update description');
+      }
+    } catch (error) {
+      console.error('Failed to update description:', error);
+      alert('Failed to update description - please try again');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const cancelEditingName = () => {
+    setEditingName(false);
+    setTempName('');
+  };
+
+  const cancelEditingDescription = () => {
+    setEditingDescription(false);
+    setTempDescription('');
+  };
+
 
   if (status === 'loading' || loading) {
     return (
@@ -183,12 +263,105 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
             ← Back to Dashboard
           </Link>
           <div className="flex items-center justify-between mb-4">
-            <div>
+            <div className="flex-1 min-w-0">
               <h1 className="text-3xl font-bold text-white mb-2">Edit Soundboard</h1>
-              <h2 className="text-xl text-gray-300">{soundboard.name}</h2>
-              {soundboard.description && (
-                <p className="text-gray-400">{soundboard.description}</p>
-              )}
+              
+              {/* Editable Name */}
+              <div className="mb-2">
+                {editingName ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={tempName}
+                      onChange={(e) => setTempName(e.target.value)}
+                      className="text-xl bg-gray-700 text-white px-3 py-1 rounded border border-gray-600 focus:border-blue-500 focus:outline-none flex-1"
+                      placeholder="Soundboard name"
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') saveName();
+                        if (e.key === 'Escape') cancelEditingName();
+                      }}
+                    />
+                    <button
+                      onClick={saveName}
+                      disabled={saving || tempName.trim() === ''}
+                      className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {saving ? '⏳' : '✓'}
+                    </button>
+                    <button
+                      onClick={cancelEditingName}
+                      className="px-3 py-1 bg-gray-600 text-white rounded text-sm hover:bg-gray-500 transition-colors"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 group">
+                    <h2 className="text-xl text-gray-300">{soundboard.name}</h2>
+                    <button
+                      onClick={startEditingName}
+                      className="opacity-0 group-hover:opacity-100 px-2 py-1 text-gray-400 hover:text-white transition-all text-sm cursor-pointer"
+                      title="Edit name"
+                    >
+                      ✏️
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Editable Description */}
+              <div>
+                {editingDescription ? (
+                  <div className="flex items-start gap-2">
+                    <textarea
+                      value={tempDescription}
+                      onChange={(e) => setTempDescription(e.target.value)}
+                      className="bg-gray-700 text-gray-300 px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none flex-1 resize-none"
+                      placeholder="Add a description (optional)"
+                      rows={2}
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          saveDescription();
+                        }
+                        if (e.key === 'Escape') cancelEditingDescription();
+                      }}
+                    />
+                    <div className="flex flex-col gap-1">
+                      <button
+                        onClick={saveDescription}
+                        disabled={saving}
+                        className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {saving ? '⏳' : '✓'}
+                      </button>
+                      <button
+                        onClick={cancelEditingDescription}
+                        className="px-3 py-1 bg-gray-600 text-white rounded text-sm hover:bg-gray-500 transition-colors"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-2 group">
+                    {soundboard.description ? (
+                      <p className="text-gray-400">{soundboard.description}</p>
+                    ) : (
+                      <p className="text-gray-500 italic">No description</p>
+                    )}
+                    <button
+                      onClick={startEditingDescription}
+                      className="opacity-0 group-hover:opacity-100 px-2 py-1 text-gray-400 hover:text-white transition-all text-sm cursor-pointer"
+                      title="Edit description"
+                    >
+                      ✏️
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <Link 

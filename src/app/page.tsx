@@ -90,18 +90,22 @@ export default function Home() {
   return (
     <main className="fixed inset-0 bg-black text-white">
       <Navigation />
-      {/* Pulsing glow border */}
-      <div className="fixed inset-0 pointer-events-none z-40">
-        <div className="absolute inset-0" 
-             style={{
-               animation: 'pulse-glow 5s ease-in-out infinite',
-               margin: '0',
-               boxSizing: 'border-box'
-             }}>
+      
+      {/* Playing Area Container */}
+      <div className="fixed top-14 left-0 right-0 bottom-0">
+        {/* Pulsing glow border */}
+        <div className="absolute inset-0 pointer-events-none z-40">
+          <div className="absolute inset-0" 
+               style={{
+                 animation: 'pulse-glow 5s ease-in-out infinite',
+                 margin: '0',
+                 boxSizing: 'border-box'
+               }}>
+          </div>
         </div>
+        <CanvasStage />
+        <GridOverlay onTap={onTap} zones={cfg?.zones} />
       </div>
-      <CanvasStage />
-      <GridOverlay onTap={onTap} zones={cfg?.zones} />
       
       {/* Welcome Message */}
       {showWelcome && (
@@ -117,7 +121,8 @@ export default function Home() {
                 height={150}
                 className="w-full max-w-2xl h-auto"
                 style={{ 
-                  filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.5)) drop-shadow(0 0 60px rgba(255,255,255,0.3))'
+                  filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.5)) drop-shadow(0 0 60px rgba(255,255,255,0.3))',
+                  transform: 'translate(5%, -10%)'
                 }}
                 priority
               />
