@@ -22,7 +22,7 @@ export function CanvasStage() {
       
       // Set up manual resize handling after initialization is complete
       const handleResize = () => {
-        if (mounted && app.canvas && !app.destroyed) {
+        if (mounted && app.canvas && app.renderer) {
           try {
             app.renderer.resize(window.innerWidth, window.innerHeight);
           } catch (error) {

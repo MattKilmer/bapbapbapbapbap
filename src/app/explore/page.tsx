@@ -87,22 +87,22 @@ export default function Explore() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-            <div className="text-2xl font-bold text-blue-400">{soundboards.length}</div>
-            <div className="text-sm text-gray-400">Public Soundboards</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center">
+            <span className="text-lg font-bold text-blue-400">{soundboards.length}</span>
+            <span className="text-sm text-gray-400 ml-2">Public Soundboards</span>
           </div>
-          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-            <div className="text-2xl font-bold text-emerald-400">
+          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center">
+            <span className="text-lg font-bold text-emerald-400">
               {soundboards.reduce((acc, sb) => acc + sb.plays, 0)}
-            </div>
-            <div className="text-sm text-gray-400">Total Plays</div>
+            </span>
+            <span className="text-sm text-gray-400 ml-2">Total Plays</span>
           </div>
-          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-            <div className="text-2xl font-bold text-purple-400">
+          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center">
+            <span className="text-lg font-bold text-purple-400">
               {new Set(soundboards.map(sb => sb.creator.id)).size}
-            </div>
-            <div className="text-sm text-gray-400">Creators</div>
+            </span>
+            <span className="text-sm text-gray-400 ml-2">Creators</span>
           </div>
         </div>
 
@@ -194,18 +194,44 @@ export default function Explore() {
         )}
 
         {/* Call to Action */}
-        {filteredSoundboards.length > 0 && session && (
+        {filteredSoundboards.length > 0 && (
           <div className="mt-12 bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-lg border border-gray-700 p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4">Ready to create your own?</h2>
-            <p className="text-gray-300 mb-6">
-              Join the community and share your unique soundboard with the world
-            </p>
-            <Link 
-              href="/soundboard/new"
-              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all font-semibold"
-            >
-              Create Your Soundboard
-            </Link>
+            {session ? (
+              <>
+                <h2 className="text-2xl font-bold mb-4">Ready to create your own?</h2>
+                <p className="text-gray-300 mb-6">
+                  Join the community and share your unique soundboard with the world
+                </p>
+                <Link 
+                  href="/soundboard/new"
+                  className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all font-semibold"
+                >
+                  Create Your Soundboard
+                </Link>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold mb-4">Ready to create your own soundboard?</h2>
+                <p className="text-gray-300 mb-6">
+                  Sign up to create and share your unique soundboards with the community. It&apos;s free and takes just a minute!
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Link 
+                    href="/auth/signin"
+                    className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all font-semibold"
+                  >
+                    Sign In
+                  </Link>
+                  <span className="text-gray-400 hidden sm:inline">or</span>
+                  <Link 
+                    href="/auth/signup"
+                    className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white rounded-lg hover:from-emerald-500 hover:to-cyan-500 transition-all font-semibold"
+                  >
+                    Create Account
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
