@@ -18,11 +18,8 @@ export const burst: Anim = {
     c.x = x; c.y = y; c.addChild(g); stage.addChild(c);
     const start = performance.now();
     const tick = () => {
-      // Check if objects are still valid before updating
-      if (!isValidPixiContext(app, stage) || c.destroyed) {
-        if (!c.destroyed) c.destroy();
-        return;
-      }
+      // Only check if container is destroyed (lightweight check)
+      if (c.destroyed) return;
       
       const t = (performance.now() - start) / (cfg?.lifeMs ?? 600);
       g.scale.set((1 + t) * globalScale);
