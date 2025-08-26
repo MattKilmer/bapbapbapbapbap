@@ -167,9 +167,10 @@ export default function Explore() {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/play/${soundboard.id}`}
-                      className="flex-1 bg-emerald-600 text-white py-2 px-4 rounded text-center hover:bg-emerald-500 transition-colors text-sm"
+                      className="flex-1 bg-emerald-600 text-white py-2 px-3 sm:px-4 rounded text-center hover:bg-emerald-500 transition-colors text-sm whitespace-nowrap"
                     >
-                      ▶ Play
+                      <span className="sm:hidden">▶</span>
+                      <span className="hidden sm:inline">▶ Play</span>
                     </Link>
                     <CopyLinkButton 
                       soundboardId={soundboard.id} 
@@ -179,9 +180,10 @@ export default function Explore() {
                     {session && session.user.id === soundboard.creator.id && (
                       <Link
                         href={`/soundboard/${soundboard.id}/edit`}
-                        className="flex-1 bg-blue-600 text-white py-2 px-4 rounded text-center hover:bg-blue-500 transition-colors text-sm"
+                        className="flex-1 bg-blue-600 text-white py-2 px-3 sm:px-4 rounded text-center hover:bg-blue-500 transition-colors text-sm whitespace-nowrap"
                       >
-                        Edit
+                        <span className="sm:hidden">⚙️</span>
+                        <span className="hidden sm:inline">Edit</span>
                       </Link>
                     )}
                   </div>
