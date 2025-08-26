@@ -37,7 +37,8 @@ export async function GET(request: NextRequest) {
         select: { id: true, name: true, email: true }
       },
       zones: {
-        include: { samples: true }
+        include: { samples: true },
+        orderBy: { position: 'asc' }
       },
       _count: {
         select: { zones: true }
@@ -95,11 +96,11 @@ export async function POST(request: NextRequest) {
       data: {
         name: name.trim(),
         description: description?.trim() || '',
-        isPublic: isPublic || false,
+        isPublic: isPublic !== false, // Default to true unless explicitly false
         userId: session.user.id,
         zones: {
           create: Array.from({ length: 16 }, (_, i) => ({
-            id: i + 1,
+            position: i + 1,
             label: '',
             animationKey: 'burst',
             isActive: true,
@@ -109,7 +110,7 @@ export async function POST(request: NextRequest) {
       include: {
         zones: {
           include: { samples: true },
-          orderBy: { id: 'asc' }
+          orderBy: { position: 'asc' }
         },
         user: {
           select: { id: true, name: true, email: true }

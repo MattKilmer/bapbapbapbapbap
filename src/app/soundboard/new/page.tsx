@@ -10,13 +10,13 @@ export default function NewSoundboard() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
         <div className="animate-spin inline-block w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full"></div>
       </div>
     );
@@ -67,7 +67,7 @@ export default function NewSoundboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-950 text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
@@ -131,11 +131,11 @@ export default function NewSoundboard() {
                   className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
                 />
                 <label htmlFor="isPublic" className="ml-2 text-sm font-medium text-white">
-                  Make this soundboard public
+                  List in explore section (recommended)
                 </label>
               </div>
               <p className="text-xs text-gray-400 ml-6 -mt-2">
-                Public soundboards can be discovered and played by other users
+                All soundboards can be shared with direct links. This option makes it discoverable in the explore section.
               </p>
 
               <div className="border-t border-gray-700 pt-6">

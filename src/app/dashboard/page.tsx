@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { CopyLinkButton } from '@/components/CopyLinkButton';
 
 interface Soundboard {
   id: string;
@@ -23,6 +24,8 @@ export default function Dashboard() {
   const router = useRouter();
   const [soundboards, setSoundboards] = useState<Soundboard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [updatingVisibility, setUpdatingVisibility] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -50,9 +53,64 @@ export default function Dashboard() {
     }
   };
 
+  const deleteSoundboard = async (soundboardId: string, soundboardName: string) => {
+    if (!confirm(`Are you sure you want to delete "${soundboardName}"? This action cannot be undone and will delete all zones and audio samples.`)) {
+      return;
+    }
+
+    setDeleting(soundboardId);
+    try {
+      const response = await fetch(`/api/soundboards/${soundboardId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Remove the soundboard from the list
+        setSoundboards(prev => prev.filter(sb => sb.id !== soundboardId));
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to delete soundboard');
+      }
+    } catch (error) {
+      console.error('Error deleting soundboard:', error);
+      alert('Something went wrong while deleting the soundboard');
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const toggleVisibility = async (soundboardId: string, currentIsPublic: boolean) => {
+    setUpdatingVisibility(soundboardId);
+    try {
+      const response = await fetch(`/api/soundboards/${soundboardId}/visibility`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isPublic: !currentIsPublic })
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        // Update the soundboard in the list
+        setSoundboards(prev => prev.map(sb => 
+          sb.id === soundboardId 
+            ? { ...sb, isPublic: result.soundboard.isPublic }
+            : sb
+        ));
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to update visibility');
+      }
+    } catch (error) {
+      console.error('Failed to update visibility:', error);
+      alert('Failed to update visibility - please try again');
+    } finally {
+      setUpdatingVisibility(null);
+    }
+  };
+
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
         <div className="animate-spin inline-block w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full"></div>
       </div>
     );
@@ -63,7 +121,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-950 text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -125,9 +183,20 @@ export default function Dashboard() {
                           <p className="text-gray-400 text-sm mb-3">{soundboard.description}</p>
                         )}
                       </div>
-                      <div className={`px-2 py-1 rounded text-xs ${soundboard.isPublic ? 'bg-green-900 text-green-300' : 'bg-gray-700 text-gray-300'}`}>
-                        {soundboard.isPublic ? 'Public' : 'Private'}
-                      </div>
+                      <button
+                        onClick={() => toggleVisibility(soundboard.id, soundboard.isPublic)}
+                        disabled={updatingVisibility === soundboard.id}
+                        className={`px-2 py-1 rounded text-xs transition-colors ${
+                          updatingVisibility === soundboard.id
+                            ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                            : soundboard.isPublic
+                            ? 'bg-green-900 text-green-300 hover:bg-green-800'
+                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                        }`}
+                        title={`Click to ${soundboard.isPublic ? 'hide from' : 'show in'} explore section`}
+                      >
+                        {updatingVisibility === soundboard.id ? '⏳ Updating...' : soundboard.isPublic ? '🌍 Public' : '🔒 Private'}
+                      </button>
                     </div>
 
                     <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
@@ -148,6 +217,23 @@ export default function Dashboard() {
                       >
                         ⚙️ Edit
                       </Link>
+                      <CopyLinkButton 
+                        soundboardId={soundboard.id} 
+                        variant="icon"
+                        size="sm"
+                      />
+                      <button
+                        onClick={() => deleteSoundboard(soundboard.id, soundboard.name)}
+                        disabled={deleting === soundboard.id}
+                        className={`px-3 py-2 rounded text-sm transition-colors ${
+                          deleting === soundboard.id
+                            ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                            : 'bg-red-600 text-white hover:bg-red-500'
+                        }`}
+                        title="Delete soundboard"
+                      >
+                        {deleting === soundboard.id ? '⏳' : '🗑️'}
+                      </button>
                     </div>
                   </div>
                 </div>

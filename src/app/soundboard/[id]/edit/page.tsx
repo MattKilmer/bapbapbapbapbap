@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { UploadAudio } from '@/components/Admin/UploadAudio';
+import { CopyLinkButton } from '@/components/CopyLinkButton';
 
 interface Soundboard {
   id: string;
@@ -21,6 +22,7 @@ interface Soundboard {
 
 interface Zone {
   id: number;
+  position: number;
   label: string;
   animationKey: string;
   animationCfg: any;
@@ -41,8 +43,8 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
   const [animations, setAnimations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [soundboardId, setSoundboardId] = useState<string>('');
-  const [tempGlobalScale, setTempGlobalScale] = useState(1.0);
   const [saving, setSaving] = useState(false);
+  const [updatingVisibility, setUpdatingVisibility] = useState(false);
 
   useEffect(() => {
     params.then(({ id }) => {
@@ -66,7 +68,6 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
         if (data.soundboard) {
           setSoundboard(data.soundboard);
           setZones(data.zones || []);
-          setTempGlobalScale(data.globalScale);
         } else {
           router.push('/dashboard');
         }
@@ -124,31 +125,36 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
     audio.play().catch(err => console.error('Failed to play audio:', err));
   };
 
-  const saveGlobalScale = async () => {
-    setSaving(true);
+  const toggleVisibility = async () => {
+    if (!soundboard) return;
+
+    setUpdatingVisibility(true);
     try {
-      const response = await fetch(`/api/soundboards/${soundboardId}/settings`, {
-        method: 'POST',
+      const response = await fetch(`/api/soundboards/${soundboardId}/visibility`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ globalScale: tempGlobalScale })
+        body: JSON.stringify({ isPublic: !soundboard.isPublic })
       });
       
       if (response.ok) {
-        setSoundboard(prev => prev ? { ...prev, globalScale: tempGlobalScale } : null);
+        const result = await response.json();
+        setSoundboard(prev => prev ? { ...prev, isPublic: result.soundboard.isPublic } : null);
       } else {
-        alert('Failed to save settings - please try again');
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to update visibility');
       }
     } catch (error) {
-      console.error('Failed to update global scale:', error);
-      alert('Failed to save settings - please try again');
+      console.error('Failed to update visibility:', error);
+      alert('Failed to update visibility - please try again');
     } finally {
-      setSaving(false);
+      setUpdatingVisibility(false);
     }
   };
 
+
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
         <div className="animate-spin inline-block w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full"></div>
       </div>
     );
@@ -164,10 +170,9 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
     return null;
   }
 
-  const hasUnsavedChanges = Math.abs((soundboard?.globalScale || 1.0) - tempGlobalScale) > 0.001;
 
   return (
-    <div className="p-4 bg-gray-900 min-h-screen">
+    <div className="p-4 bg-gray-950 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <Link 
@@ -191,44 +196,27 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
               >
                 ▶ Test Soundboard
               </Link>
-            </div>
-          </div>
-          
-          {/* Global Animation Scale Control */}
-          <div className="mt-4 p-4 bg-purple-900/20 border border-purple-700 rounded-lg">
-            <div className="flex items-center gap-4 flex-wrap">
-              <label className="text-sm font-semibold text-purple-300">
-                🎨 Global Animation Scale:
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="range"
-                  min="0.5"
-                  max="5"
-                  step="0.5"
-                  value={tempGlobalScale}
-                  onChange={(e) => setTempGlobalScale(parseFloat(e.target.value))}
-                  className="w-32 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
-                />
-                <span className="text-lg font-bold text-purple-300 min-w-[3rem]">
-                  {tempGlobalScale}x
-                </span>
-              </div>
+              <CopyLinkButton 
+                soundboardId={soundboard.id} 
+                size="md"
+              />
               <button
-                onClick={saveGlobalScale}
-                disabled={!hasUnsavedChanges || saving}
-                className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${
-                  hasUnsavedChanges && !saving
-                    ? 'bg-purple-600 hover:bg-purple-500 text-white'
-                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                }`}
+                onClick={toggleVisibility}
+                disabled={updatingVisibility}
+                className={`px-4 py-2 rounded transition-colors font-medium ${
+                  soundboard.isPublic
+                    ? 'bg-orange-600 text-white hover:bg-orange-500'
+                    : 'bg-blue-600 text-white hover:bg-blue-500'
+                } ${updatingVisibility ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                {saving ? '⏳ Saving...' : hasUnsavedChanges ? '💾 Save Changes' : '✅ Saved'}
+                {updatingVisibility ? (
+                  '⏳ Updating...'
+                ) : soundboard.isPublic ? (
+                  '👁️ Hide from Explore'
+                ) : (
+                  '🔍 Show in Explore'
+                )}
               </button>
-              <div className="text-xs text-purple-300 max-w-md">
-                Controls how big all animations appear (0.5x = tiny, 1x = default, 5x = huge)
-                {hasUnsavedChanges && <div className="text-orange-400 font-medium">⚠️ You have unsaved changes</div>}
-              </div>
             </div>
           </div>
         </div>
@@ -239,28 +227,9 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
               {/* Zone Header */}
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-white">Zone {zone.id}</h3>
+                  <h3 className="text-lg font-bold text-white">Zone {zone.position}</h3>
                   <div className={`w-3 h-3 rounded-full ${zone.isActive ? 'bg-green-400' : 'bg-red-400'}`} title={zone.isActive ? 'Active' : 'Inactive'}></div>
                 </div>
-              </div>
-
-              {/* Animation Section */}
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-white mb-2">
-                  🎨 Animation: 
-                  <span className="font-normal text-gray-300 ml-1">
-                    {animations.find(a => a.key === zone.animationKey)?.name || 'Unknown'}
-                  </span>
-                </label>
-                <select
-                  value={zone.animationKey}
-                  onChange={(e) => updateZone(zone.id, { animationKey: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-white bg-gray-700"
-                >
-                  {animations.map(anim => (
-                    <option key={anim.key} value={anim.key}>{anim.name}</option>
-                  ))}
-                </select>
               </div>
 
               {/* Samples Section */}
@@ -301,6 +270,25 @@ export default function EditSoundboard({ params }: { params: Promise<{ id: strin
                     <UploadAudio zoneId={zone.id} onUploadComplete={refreshZones} />
                   </div>
                 )}
+              </div>
+
+              {/* Animation Section */}
+              <div className="mb-4">
+                <label className="block text-sm font-semibold text-white mb-2">
+                  🎨 Animation: 
+                  <span className="font-normal text-gray-300 ml-1">
+                    {animations.find(a => a.key === zone.animationKey)?.name || 'Unknown'}
+                  </span>
+                </label>
+                <select
+                  value={zone.animationKey}
+                  onChange={(e) => updateZone(zone.id, { animationKey: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-white bg-gray-700"
+                >
+                  {animations.map(anim => (
+                    <option key={anim.key} value={anim.key}>{anim.name}</option>
+                  ))}
+                </select>
               </div>
             </div>
           ))}

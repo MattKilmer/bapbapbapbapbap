@@ -14,10 +14,20 @@ export default function Home() {
   const appRef = useRef<Application | null>(null);
 
   useEffect(() => { 
-    const loadConfig = () => fetch('/api/config').then(r => r.json()).then(data => {
-      console.log('Main app received config with globalScale:', data.globalScale, 'at', new Date().toLocaleTimeString());
-      setCfg(data);
-    });
+    const loadConfig = () => fetch('/api/config')
+      .then(r => {
+        if (!r.ok) {
+          throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+        }
+        return r.json();
+      })
+      .then(data => {
+        console.log('Main app received config with globalScale:', data.globalScale, 'at', new Date().toLocaleTimeString());
+        setCfg(data);
+      })
+      .catch(error => {
+        console.error('Failed to load config:', error);
+      });
     
     // Load config initially
     loadConfig();

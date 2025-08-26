@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { CopyLinkButton } from '@/components/CopyLinkButton';
 
 interface Soundboard {
   id: string;
@@ -54,7 +55,7 @@ export default function Explore() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white">
+      <div className="min-h-screen bg-gray-950 text-white">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center h-96">
             <div className="animate-spin inline-block w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full"></div>
@@ -65,7 +66,7 @@ export default function Explore() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pt-16">
+    <div className="min-h-screen bg-gray-950 text-white pt-16">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Explore Soundboards</h1>
@@ -170,6 +171,11 @@ export default function Explore() {
                     >
                       ▶ Play
                     </Link>
+                    <CopyLinkButton 
+                      soundboardId={soundboard.id} 
+                      variant="icon"
+                      size="sm"
+                    />
                     {session && session.user.id === soundboard.creator.id && (
                       <Link
                         href={`/soundboard/${soundboard.id}/edit`}

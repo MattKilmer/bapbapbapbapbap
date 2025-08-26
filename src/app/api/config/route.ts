@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       include: {
         zones: {
           include: { samples: true },
-          orderBy: { id: 'asc' }
+          orderBy: { position: 'asc' }
         },
         user: {
           select: { id: true, name: true, email: true }
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       include: {
         zones: {
           include: { samples: true },
-          orderBy: { id: 'asc' }
+          orderBy: { position: 'asc' }
         },
         user: {
           select: { id: true, name: true, email: true }
@@ -60,24 +60,12 @@ export async function GET(request: NextRequest) {
       globalScale = defaultSoundboard.globalScale;
       soundboard = defaultSoundboard;
     } else {
-      // Fallback to legacy behavior if no soundboards exist
-      zones = await prisma.zone.findMany({
-        where: { soundboardId: null },
-        include: { samples: true },
-        orderBy: { id: 'asc' }
-      });
+      // No soundboards found - return empty config
+      zones = [];
+      globalScale = 1.0;
+      soundboard = null;
       
-      // Get global settings with fallback
-      try {
-        const settings = await prisma.settings.findFirst();
-        if (settings) {
-          globalScale = settings.globalScale;
-        }
-      } catch (error) {
-        console.log('Settings table not available yet, using temp storage');
-        globalScale = getTempGlobalScale();
-        console.log('Config API returning globalScale from temp storage:', globalScale);
-      }
+      console.log('No soundboards found, returning empty config');
     }
   }
   
