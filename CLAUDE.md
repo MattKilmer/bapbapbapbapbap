@@ -13,32 +13,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Database Operations
 - `npx prisma generate` - Generate Prisma client after schema changes
 - `npx prisma db push` - Push schema changes to database
-- `npx prisma db seed` - Seed database with initial data
+- `npx prisma db execute --file migration.sql` - Execute raw SQL migrations
 - `npx prisma studio` - Open Prisma Studio for database management
 
 ### Environment Setup
 - Copy `.env.example` to `.env.local` and configure:
   - `DATABASE_URL` - PostgreSQL connection string
   - `BLOB_READ_WRITE_TOKEN` - Vercel Blob storage token
-  - `ADMIN_PASSWORD` - Admin panel authentication
+  - `NEXTAUTH_SECRET` - NextAuth.js secret key
+  - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` - Google OAuth credentials
 
 ## Architecture Overview
 
-This is an interactive audio-visual trigger application built with Next.js 15, featuring a 4×4 grid where each zone triggers particle animations and audio samples.
+This is a multi-user interactive audio-visual soundboard platform built with Next.js 15, featuring user authentication, 4×4 audio grids, and a community sharing system.
 
 ### Core System Architecture
 
 **Frontend Architecture:**
 - Next.js 15 with App Router and React 19
 - PIXI.js for high-performance 2D particle rendering via `CanvasStage` component
-- Audio engine using Tone.js and HTML5 Audio API
-- Tailwind CSS with path alias `@/*` pointing to `./src/*`
+- Audio engine using HTML5 Audio API with gain controls
+- Tailwind CSS with dark theme (bg-gray-950) and path alias `@/*` pointing to `./src/*`
 
-**Backend Architecture:**
-- Next.js API routes with comprehensive rate limiting system
-- PostgreSQL database with Prisma ORM
-- Vercel Blob storage for audio file uploads
-- Cookie-based admin authentication via middleware
+**Authentication & User Management:**
+- NextAuth.js with Google OAuth and credentials providers
+- Multi-user platform with user-owned soundboards
+- Admin panel with cookie-based authentication (`adm` cookie vs `ADMIN_PASSWORD`)
+- Role-based permissions (USER, ARTIST, ADMIN)
 
 ### Key Components
 

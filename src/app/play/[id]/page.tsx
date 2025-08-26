@@ -6,6 +6,7 @@ import { Navigation } from '@/components/Navigation';
 import { Application } from 'pixi.js';
 import { animations } from '@/lib/animations';
 import { play } from '@/lib/audio/engine';
+import Link from 'next/link';
 
 export default function PlaySoundboard({ params }: { params: Promise<{ id: string }> }) {
   const [cfg, setCfg] = useState<any>(null);
@@ -131,12 +132,12 @@ export default function PlaySoundboard({ params }: { params: Promise<{ id: strin
           <div className="text-6xl mb-4">🎵</div>
           <h1 className="text-2xl font-bold mb-2">Soundboard Not Found</h1>
           <p className="text-gray-300 mb-6">{error}</p>
-          <a 
+          <Link 
             href="/"
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors"
           >
             Go to Main Soundboard
-          </a>
+          </Link>
         </div>
       </main>
     );

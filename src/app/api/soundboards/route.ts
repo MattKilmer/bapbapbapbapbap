@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   
   const session = await getServerSession(authOptions);
   
-  let where: any = {};
+  const where: any = {};
   
   if (userId) {
     // Get soundboards for specific user

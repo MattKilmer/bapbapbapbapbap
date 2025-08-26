@@ -150,7 +150,7 @@ export default function NewSoundboard() {
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs font-bold">2</div>
                     <div>
-                      You'll be taken to the <strong>editor</strong> to upload audio samples
+                      You&apos;ll be taken to the <strong>editor</strong> to upload audio samples
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
