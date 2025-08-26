@@ -40,7 +40,6 @@ export default function AdminPage() {
       const result = await response.json();
       if (response.ok && result.globalScale !== undefined) {
         setGlobalScale(tempGlobalScale);
-        console.log('Global scale saved:', tempGlobalScale);
       } else {
         console.error('Failed to save global scale');
         alert('Failed to save global scale - please try again');

@@ -30,7 +30,7 @@ export default function PlaySoundboard({ params }: { params: Promise<{ id: strin
       const app = (window as any).__pixiApp;
       if (app) {
         appRef.current = app;
-        console.log('PIXI app found and set');
+        // PIXI app ready
       } else {
         setTimeout(checkApp, 100);
       }
@@ -49,7 +49,6 @@ export default function PlaySoundboard({ params }: { params: Promise<{ id: strin
         return r.json();
       })
       .then(data => {
-        console.log('Received config with globalScale:', data.globalScale, 'at', new Date().toLocaleTimeString());
         setCfg(data);
         setError('');
         setLoading(false);
@@ -65,7 +64,7 @@ export default function PlaySoundboard({ params }: { params: Promise<{ id: strin
     // Increment play count on first tap
     if (isFirstTap && soundboardId) {
       fetch(`/api/soundboards/${soundboardId}/play`, { method: 'POST' })
-        .catch(err => console.error('Failed to increment play count:', err));
+        .catch(() => {}); // Ignore play count increment errors
     }
 
     // Handle first tap welcome message
@@ -75,42 +74,31 @@ export default function PlaySoundboard({ params }: { params: Promise<{ id: strin
       setTimeout(() => setShowWelcome(false), 1000);
     }
     
-    console.log('Zone tapped:', zoneIndex);
     if (!cfg) {
-      console.log('Missing cfg:', { cfg: !!cfg });
       return;
     }
     
     const zone = cfg.zones[zoneIndex];
-    console.log('Zone data:', zone);
     
     const sample = zone?.samples?.length
       ? zone.samples[Math.floor(Math.random() * zone.samples.length)]
       : null;
-    console.log('Selected sample:', sample);
     
     if (sample) {
-      console.log('Playing audio:', sample.url, 'gain:', sample.gainDb);
       play(sample.url, sample.gainDb);
-    } else {
-      console.log('No sample to play');
     }
     
     // Only run animation if PIXI app is available
     if (appRef.current) {
       const anim = animations[zone.animationKey];
       if (anim) {
-        console.log('Running animation:', zone.animationKey, 'with cfg.globalScale:', cfg.globalScale);
         // Use dynamic global scale from settings
         const scaledCfg = {
           ...zone.animationCfg,
           globalScale: cfg.globalScale || 1
         };
-        console.log('scaledCfg passed to animation:', scaledCfg);
         anim.run({ app: appRef.current, stage: appRef.current.stage, zoneIndex, x, y, cfg: scaledCfg });
       }
-    } else {
-      console.log('PIXI app not ready, skipping animation');
     }
   };
 

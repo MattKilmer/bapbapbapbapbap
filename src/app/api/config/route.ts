@@ -63,8 +63,6 @@ export async function GET(request: NextRequest) {
       zones = [];
       globalScale = 1.0;
       soundboard = null;
-      
-      console.log('No soundboards found, returning empty config');
     }
   }
   

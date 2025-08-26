@@ -21,14 +21,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    console.log('Uploading file:', { name: file.name, size: file.size, type: file.type });
-
     // Upload directly to Vercel Blob
     const blob = await put(`${Date.now()}-${file.name}`, file, {
       access: 'public',
     });
-
-    console.log('Upload completed:', { url: blob.url });
 
     const response = NextResponse.json({
       url: blob.url,

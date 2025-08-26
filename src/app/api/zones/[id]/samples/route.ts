@@ -28,8 +28,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { url, label, gainDb } = await req.json();
     const { id } = await params;
     
-    console.log('Creating sample:', { zoneId: parseInt(id), url, label, gainDb });
-    
     const sample = await prisma.sample.create({
       data: {
         zoneId: parseInt(id),
@@ -38,8 +36,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         gainDb: gainDb || 0,
       }
     });
-    
-    console.log('Sample created:', sample);
     const response = NextResponse.json(sample);
     return addRateLimitHeaders(response, rateLimitResult);
   } catch (error) {

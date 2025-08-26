@@ -68,7 +68,6 @@ export async function POST(request: NextRequest) {
     console.error('Settings POST error (table may not exist yet):', error);
     // Use temporary storage as fallback
     setTempGlobalScale(globalScale);
-    console.log('Saved to temp storage:', globalScale);
     const response = NextResponse.json({ id: 1, globalScale }, { status: 200 });
     return addRateLimitHeaders(response, rateLimitResult);
   }
