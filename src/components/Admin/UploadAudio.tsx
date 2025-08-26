@@ -1,10 +1,12 @@
 'use client';
 import { useState, useRef, useCallback } from 'react';
+import { useToast } from '@/components/Toast';
 
 export function UploadAudio({ zoneId, onUploadComplete }: { zoneId: number, onUploadComplete?: () => void }) {
   const [uploading, setUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showToast } = useToast();
 
   const uploadFile = useCallback(async (file: File) => {
     setUploading(true);
@@ -35,7 +37,7 @@ export function UploadAudio({ zoneId, onUploadComplete }: { zoneId: number, onUp
       
       if (sampleRes.ok) {
         onUploadComplete?.();
-        alert('✅ Audio uploaded successfully!');
+        showToast('Audio uploaded successfully!', 'success');
       } else {
         const errorData = await sampleRes.json();
         console.error('Sample save error:', errorData);
@@ -43,11 +45,11 @@ export function UploadAudio({ zoneId, onUploadComplete }: { zoneId: number, onUp
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('❌ Upload failed. Please try again.');
+      showToast('Upload failed. Please try again.', 'error');
     } finally {
       setUploading(false);
     }
-  }, [zoneId, onUploadComplete]);
+  }, [zoneId, onUploadComplete, showToast]);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -83,9 +85,9 @@ export function UploadAudio({ zoneId, onUploadComplete }: { zoneId: number, onUp
     if (audioFile) {
       uploadFile(audioFile);
     } else {
-      alert('Please drop an audio file');
+      showToast('Please drop an audio file', 'error');
     }
-  }, [uploadFile]);
+  }, [uploadFile, showToast]);
 
   const handleClick = useCallback(() => {
     if (!uploading && fileInputRef.current) {

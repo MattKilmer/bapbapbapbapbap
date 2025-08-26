@@ -43,10 +43,11 @@ This is a **multi-user interactive audio-visual soundboard platform** built with
 - Successfully deployed to production
 
 **Latest Session Updates:**
-- Fixed Google OAuth redirect URI mismatch for production (www vs non-www)
-- Improved mobile UI responsiveness across all components
-- Removed unnecessary console logging while keeping error logs
-- All components now scale properly on mobile devices
+- **CRITICAL FIX: Audio Upload Authentication** - Resolved production upload failures
+- Fixed middleware routing that was incorrectly redirecting API calls to /admin-login
+- Added proper NextAuth authentication to all soundboard editing endpoints
+- Switched from admin-only to user-authenticated API routes for soundboard management
+- Upload functionality now works correctly for authenticated users in production
 
 ### Core System Architecture
 
@@ -164,6 +165,17 @@ Sample {
 - CopyLinkButton: mobile-responsive padding and typography
 - Added whitespace-nowrap and flex constraints to prevent button squishing
 
+**Authentication & API Security (Latest):**
+- **Fixed critical audio upload bug** that was causing 405 errors in production
+- Removed `/api/upload-token`, `/api/zones/*`, and `/api/samples/*` from admin-only middleware
+- Added NextAuth session authentication to all soundboard editing endpoints:
+  - `/api/upload-token` - File upload with user authentication
+  - `/api/zones/[id]/samples` - Adding audio samples to zones
+  - `/api/zones/[id]` - Updating zone properties (animation, etc.)
+  - `/api/samples/[id]` - Deleting audio samples
+- Switched from `adminRateLimit` to `uploadRateLimit` for user operations
+- Middleware now only protects actual admin routes (`/admin/*`)
+
 **Code Quality & Performance:**
 - Removed verbose debug logging from audio engine, main page, and API routes
 - Kept important error logging for debugging
@@ -238,8 +250,10 @@ Sample {
 **Current Production Status:**
 - Multi-user platform fully functional
 - Authentication working (both Google OAuth and credentials)
+- **Audio upload system working correctly** - all 405 errors resolved
 - Mobile responsive design implemented
 - All critical features tested and operational
+- Soundboard editing (upload, delete, modify) working for authenticated users
 
 ### Development Patterns
 
