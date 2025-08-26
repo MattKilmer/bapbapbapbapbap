@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const ADMIN_PATHS = [/^\/admin($|\/)/, /^\/api\/(upload-token|zones|samples)/];
+const ADMIN_PATHS = [/^\/admin($|\/)/, /^\/api\/(zones|samples)/];
 
 export function middleware(req: NextRequest) {
   const url = new URL(req.url);

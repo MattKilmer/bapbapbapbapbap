@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
 import { put } from '@vercel/blob';
 import { uploadRateLimit, addRateLimitHeaders } from '@/lib/rate-limit';
+import { authOptions } from '@/lib/auth-config';
 
 export async function POST(req: NextRequest) {
+  // Check authentication
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    return NextResponse.json(
+      { error: 'Authentication required' },
+      { status: 401 }
+    );
+  }
+
   // Apply rate limiting
   const rateLimitResult = await uploadRateLimit(req);
   
