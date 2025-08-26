@@ -14,4 +14,4 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/admin/:path*", "/api/:path*"] };
+export const config = { matcher: ["/admin/:path*", "/api/zones/:path*", "/api/samples/:path*"] };
