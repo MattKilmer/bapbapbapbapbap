@@ -26,10 +26,9 @@ export function CanvasStage() {
       
       // Set up manual resize handling after initialization is complete
       const handleResize = () => {
-        if (mounted && app.canvas && app.renderer && ref.current) {
+        if (mounted && app.canvas && app.renderer) {
           try {
-            const rect = ref.current.getBoundingClientRect();
-            app.renderer.resize(rect.width, rect.height);
+            app.renderer.resize(window.innerWidth, window.innerHeight);
           } catch (error) {
             console.warn('Error resizing PIXI app:', error);
           }
