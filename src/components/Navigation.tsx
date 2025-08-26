@@ -15,6 +15,13 @@ export function Navigation() {
         </Link>
 
         <div className="flex items-center space-x-4">
+          <Link 
+            href="/explore"
+            className="text-white hover:text-blue-400 transition-colors hidden md:block"
+          >
+            Explore
+          </Link>
+
           {status === 'loading' ? (
             <div className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
           ) : session ? (
