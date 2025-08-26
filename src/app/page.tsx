@@ -6,6 +6,7 @@ import { Navigation } from '@/components/Navigation';
 import { Application } from 'pixi.js';
 import { animations } from '@/lib/animations';
 import { play } from '@/lib/audio/engine';
+import Image from 'next/image';
 
 export default function Home() {
   const [cfg, setCfg] = useState<any>(null);
@@ -108,15 +109,28 @@ export default function Home() {
           !isFirstTap ? 'opacity-0' : 'opacity-100'
         }`}>
           <div className="text-center px-4 max-w-6xl mx-auto">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white mb-4 md:mb-8 tracking-wider leading-tight" 
+            <div className="mb-6 md:mb-12 flex justify-center">
+              <Image
+                src="/logo-large.png"
+                alt="BapBapBapBapBap"
+                width={600}
+                height={150}
+                className="w-full max-w-2xl h-auto"
+                style={{ 
+                  filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.5)) drop-shadow(0 0 60px rgba(255,255,255,0.3))'
+                }}
+                priority
+              />
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-white mb-4 md:mb-8 tracking-wider leading-tight" 
                 style={{ 
                   fontFamily: 'var(--font-comfortaa)',
                   textShadow: '0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.3)',
                   letterSpacing: '0.1em',
                   fontWeight: '300'
                 }}>
-              Welcome to BapBapBapBapBap
-            </h1>
+              Welcome
+            </h2>
             <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/80 font-light tracking-wide animate-pulse"
                style={{ 
                  fontFamily: 'var(--font-comfortaa)',

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function SignUp() {
   const [name, setName] = useState('');
@@ -87,7 +88,16 @@ export default function SignUp() {
     <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-2">BapBapBapBapBap</h1>
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/logo-small.png"
+              alt="BapBapBapBapBap"
+              width={300}
+              height={80}
+              className="w-auto h-16"
+              priority
+            />
+          </div>
           <p className="text-gray-300 text-lg mb-8">Just tap it</p>
           <h2 className="text-2xl font-semibold text-white">Create your account</h2>
         </div>

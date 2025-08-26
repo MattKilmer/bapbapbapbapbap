@@ -138,31 +138,33 @@ export default function PlaySoundboard({ params }: { params: Promise<{ id: strin
     <main className="fixed inset-0 bg-black text-white">
       <Navigation />
       
-      {/* Soundboard Info */}
+      {/* Secondary Navigation Bar with Soundboard Info */}
       {cfg?.soundboard && (
-        <div className="fixed top-16 left-4 z-40 bg-black/80 backdrop-blur-sm rounded-lg p-3 border border-gray-800">
-          <div className="text-sm font-semibold">{soundboardName}</div>
-          {creatorName && (
-            <div className="text-xs text-gray-400">by {creatorName}</div>
-          )}
-          {cfg.soundboard.description && (
-            <div className="text-xs text-gray-400 max-w-xs truncate">{cfg.soundboard.description}</div>
-          )}
+        <div className="fixed top-14 left-0 right-0 z-40 bg-black/90 backdrop-blur-sm border-b border-gray-800 h-10">
+          <div className="container mx-auto px-4 flex items-center justify-center h-full">
+            <div className="text-sm font-medium text-white">{soundboardName}</div>
+            {creatorName && (
+              <div className="text-xs text-gray-400 ml-2">by {creatorName}</div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* Pulsing glow border */}
-      <div className="fixed inset-0 pointer-events-none z-30">
-        <div className="absolute inset-0" 
-             style={{
-               animation: 'pulse-glow 5s ease-in-out infinite',
-               margin: '0',
-               boxSizing: 'border-box'
-             }}>
+      {/* Playing Area Container */}
+      <div className={`fixed ${cfg?.soundboard ? 'top-24' : 'top-14'} left-0 right-0 bottom-0`}>
+        {/* Pulsing glow border */}
+        <div className="absolute inset-0 pointer-events-none z-30">
+          <div className="absolute inset-0" 
+               style={{
+                 animation: 'pulse-glow 5s ease-in-out infinite',
+                 margin: '0',
+                 boxSizing: 'border-box'
+               }}>
+          </div>
         </div>
+        <CanvasStage />
+        <GridOverlay onTap={onTap} zones={cfg?.zones} />
       </div>
-      <CanvasStage />
-      <GridOverlay onTap={onTap} zones={cfg?.zones} />
       
       {/* Welcome Message */}
       {showWelcome && (
