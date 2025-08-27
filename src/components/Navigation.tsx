@@ -58,7 +58,7 @@ export function Navigation() {
               </Link>
               <Link
                 href="/auth/signup"
-                className="px-2 py-1 sm:px-4 sm:py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition-colors text-xs sm:text-sm whitespace-nowrap"
+                className="px-2 py-1 sm:px-4 sm:py-2 border border-white text-white rounded hover:bg-white hover:text-black transition-colors text-xs sm:text-sm whitespace-nowrap"
               >
                 Sign up
               </Link>
