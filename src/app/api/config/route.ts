@@ -34,14 +34,9 @@ export async function GET(request: NextRequest) {
       );
     }
   } else {
-    // Default behavior - load the default/first public soundboard
-    const defaultSoundboard = await prisma.soundboard.findFirst({
-      where: { 
-        OR: [
-          { isPublic: true },
-          { user: { role: 'ADMIN' } }
-        ]
-      },
+    // Default behavior - load the "luvs" soundboard as default
+    const defaultSoundboard = await prisma.soundboard.findUnique({
+      where: { id: 'cmewa8cfm0001le04cotogugb' },
       include: {
         zones: {
           include: { samples: true },
@@ -50,8 +45,7 @@ export async function GET(request: NextRequest) {
         user: {
           select: { id: true, name: true, email: true }
         }
-      },
-      orderBy: { createdAt: 'asc' }
+      }
     });
 
     if (defaultSoundboard) {
@@ -59,10 +53,36 @@ export async function GET(request: NextRequest) {
       globalScale = defaultSoundboard.globalScale;
       soundboard = defaultSoundboard;
     } else {
-      // No soundboards found - return empty config
-      zones = [];
-      globalScale = 1.0;
-      soundboard = null;
+      // Fallback: if the specific soundboard is not found, load any public soundboard
+      const fallbackSoundboard = await prisma.soundboard.findFirst({
+        where: { 
+          OR: [
+            { isPublic: true },
+            { user: { role: 'ADMIN' } }
+          ]
+        },
+        include: {
+          zones: {
+            include: { samples: true },
+            orderBy: { position: 'asc' }
+          },
+          user: {
+            select: { id: true, name: true, email: true }
+          }
+        },
+        orderBy: { createdAt: 'asc' }
+      });
+
+      if (fallbackSoundboard) {
+        zones = fallbackSoundboard.zones;
+        globalScale = fallbackSoundboard.globalScale;
+        soundboard = fallbackSoundboard;
+      } else {
+        // No soundboards found - return empty config
+        zones = [];
+        globalScale = 1.0;
+        soundboard = null;
+      }
     }
   }
   
