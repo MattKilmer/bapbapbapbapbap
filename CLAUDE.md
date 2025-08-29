@@ -44,9 +44,13 @@ This is a **multi-user interactive audio-visual soundboard platform** built with
 - Successfully deployed to production
 
 **Latest Session Updates:**
-- **Admin Dashboard MVP (2025-08-29)** - Professional admin panel with sidebar navigation, user management, soundboard moderation
-- **Dynamic Open Graph Sharing (2025-08-29)** - Social media previews show "[Soundboard] by [Creator] - Play it now on BapBapBapBapBap"
-- **Default Soundboard Configuration (2025-08-29)** - Set 'luvs' soundboard as main site default while preserving welcome experience
+- **User Profile System Complete (2025-08-29)** - Full user profiles with username system, profile editing, and public/private soundboard display
+- **Profile Editing System (2025-08-29)** - Comprehensive settings page for username and display name editing with validation
+- **Navigation Enhancement (2025-08-29)** - User names in navigation link to profiles, improved UX flow
+- **Previous Major Updates:**
+  - **Admin Dashboard MVP (2025-08-29)** - Professional admin panel with sidebar navigation, user management, soundboard moderation
+  - **Dynamic Open Graph Sharing (2025-08-29)** - Social media previews show "[Soundboard] by [Creator] - Play it now on BapBapBapBapBap"
+  - **Default Soundboard Configuration (2025-08-29)** - Set 'luvs' soundboard as main site default while preserving welcome experience
 - **Previous Updates:**
   - **🚀 CRITICAL MOBILE PERFORMANCE OPTIMIZATION (2025-08-26)** - Comprehensive fix for slow mobile animations
   - **Canvas Sizing Bug Fix** - Resolved critical canvas oversizing issue (viewport vs container mismatch)
@@ -107,6 +111,8 @@ Sample {
 - `/play/[id]` - Specific soundboard playback (with dynamic Open Graph)
 - `/soundboard/new` - Create new soundboard
 - `/soundboard/[id]/edit` - Edit soundboard (owner only)
+- `/user/[username]` - Public user profiles with soundboard collections
+- `/settings` - Profile editing (username, display name, account info)
 - `/admin` - Admin panel (redirects to dashboard)
 - `/admin/dashboard` - Admin overview with metrics
 - `/admin/users` - User management and role editing
@@ -120,6 +126,10 @@ Sample {
 - Protected routes and session management
 - User dashboard with soundboard list
 - Delete soundboard functionality with confirmation
+- **Public user profiles** at `/user/[username]` with soundboard collections
+- **Profile editing system** with username and display name management
+- **Username validation** with uniqueness checks and reserved word protection
+- **Session synchronization** when profile updates occur
 
 **Soundboard System:**
 - Create, edit, delete personal soundboards
@@ -143,6 +153,8 @@ Sample {
 - File upload handling with Vercel Blob integration
 - Admin API endpoints under `/api/admin/` (stats, users, soundboards)
 - Dynamic metadata generation for social sharing
+- **User profile endpoints** `/api/user/[username]` and `/api/user/profile`
+- **Username generation endpoint** `/api/admin/generate-usernames` for existing users
 
 ### Key Components
 
@@ -160,11 +172,35 @@ Sample {
 - Responsive navigation bar
 - Authentication state integration
 - Logo and branding
+- **Smart profile linking** - User names link to profiles when username exists, settings when not
 
 **Copy Functionality (`src/components/CopyLinkButton.tsx`):**
 - Reusable clipboard integration
 - Browser compatibility with fallbacks
 - Visual feedback for successful copies
+
+### User Profile System
+
+**Profile Features:**
+- **Public User Profiles** (`/user/[username]`) - Display user info, soundboard collections, stats
+- **Profile Editing** (`/settings`) - Comprehensive settings page for profile management
+- **Username System** - Unique usernames with validation (3-20 chars, alphanumeric + underscore)
+- **Display Names** - Customizable display names up to 50 characters
+- **Profile Images** - Support for Google OAuth and GitHub profile pictures via Next.js Image
+- **Edit Profile Button** - Appears on own profile for quick access to settings
+- **Username Generation** - Admin tool and script for generating usernames for existing users
+
+**Profile API Endpoints:**
+- `/api/user/[username]` - Get public profile data by username
+- `/api/user/profile` - Get/update current user's profile
+- `/api/admin/generate-usernames` - Bulk username generation for existing users
+
+**Username Validation Rules:**
+- 3-20 characters in length
+- Only letters, numbers, and underscores
+- Cannot start or end with underscore
+- Must be unique across platform
+- Reserved words blocked (admin, api, dashboard, etc.)
 
 ### Admin System
 
@@ -394,10 +430,16 @@ Sample {
 - Vercel Blob for file storage
 - bcryptjs for password hashing
 
+### Configuration
+- **Next.js Image Optimization** - Configured for Google and GitHub profile images
+- **Remote Image Patterns** - `lh3.googleusercontent.com` and `avatars.githubusercontent.com`
+- **Database Schema** - Username field with unique constraint added to User model
+- **Session Management** - NextAuth updated to include username in JWT and session
+
 ### Deployment Notes
 - Vercel deployment configured
 - Environment variables properly set
 - Database migrations automated
 - TypeScript compilation verified
 - Production build optimized and tested
-- **Latest deployment (2025-08-26):** 🚀 CRITICAL mobile performance optimization - canvas sizing fix, PIXI.js mobile optimization, animation performance scaling
+- **Latest deployment (2025-08-29):** Complete user profile system with editing capabilities, username validation, and navigation enhancements
