@@ -18,6 +18,7 @@ interface Soundboard {
   creator: {
     id: string;
     name: string;
+    username: string;
     email: string;
   };
   createdAt: string;
@@ -158,7 +159,17 @@ export default function Explore() {
                       <p className="text-gray-400 text-sm mb-3">{soundboard.description}</p>
                     )}
                     <div className="flex items-center text-sm text-gray-500">
-                      <span>by {soundboard.creator.name || soundboard.creator.email}</span>
+                      <span>by </span>
+                      {soundboard.creator.username ? (
+                        <Link 
+                          href={`/user/${soundboard.creator.username}`}
+                          className="text-blue-400 hover:text-blue-300 ml-1"
+                        >
+                          {soundboard.creator.name || soundboard.creator.username}
+                        </Link>
+                      ) : (
+                        <span className="ml-1">{soundboard.creator.name || soundboard.creator.email}</span>
+                      )}
                     </div>
                   </div>
 

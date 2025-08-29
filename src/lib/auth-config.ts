@@ -20,6 +20,14 @@ const providers: any[] = [
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email
+          },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            username: true,
+            password: true,
+            role: true
           }
         });
 
@@ -40,6 +48,7 @@ const providers: any[] = [
           id: user.id,
           email: user.email,
           name: user.name,
+          username: user.username,
           role: user.role,
         };
       }
@@ -64,6 +73,7 @@ export const authOptions: NextAuthOptions = {
     jwt: async ({ token, user }) => {
       if (user) {
         token.role = (user as any).role;
+        token.username = (user as any).username;
       }
       return token;
     },
@@ -71,6 +81,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.sub!;
         session.user.role = token.role as string;
+        session.user.username = token.username as string;
       }
       return session;
     },

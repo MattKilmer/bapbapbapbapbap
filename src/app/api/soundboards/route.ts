@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     where,
     include: {
       user: {
-        select: { id: true, name: true, email: true }
+        select: { id: true, name: true, username: true, email: true }
       },
       zones: {
         include: { samples: true },
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
           orderBy: { position: 'asc' }
         },
         user: {
-          select: { id: true, name: true, email: true }
+          select: { id: true, name: true, username: true, email: true }
         }
       }
     });

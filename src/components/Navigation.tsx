@@ -41,12 +41,21 @@ export function Navigation() {
               >
                 Dashboard
               </Link>
-              <Link 
-                href="/dashboard"
-                className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm max-w-20 sm:max-w-none truncate"
-              >
-                {session.user?.name || session.user?.email}
-              </Link>
+              {session.user?.username ? (
+                <Link 
+                  href={`/user/${session.user.username}`}
+                  className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm max-w-20 sm:max-w-none truncate"
+                >
+                  {session.user?.name || session.user?.username}
+                </Link>
+              ) : (
+                <Link 
+                  href="/dashboard"
+                  className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm max-w-20 sm:max-w-none truncate"
+                >
+                  {session.user?.name || session.user?.email}
+                </Link>
+              )}
             </div>
           ) : (
             <div className="flex items-center space-x-2 sm:space-x-3">
