@@ -23,6 +23,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `NEXTAUTH_SECRET` - NextAuth.js secret key
   - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` - Google OAuth credentials
   - `NEXTAUTH_URL` - Base URL for NextAuth callbacks
+  - `ADMIN_PASSWORD` - Password for admin panel access
 
 ## Architecture Overview
 
@@ -43,12 +44,15 @@ This is a **multi-user interactive audio-visual soundboard platform** built with
 - Successfully deployed to production
 
 **Latest Session Updates:**
-- **🚀 CRITICAL MOBILE PERFORMANCE OPTIMIZATION (2025-08-26)** - Comprehensive fix for slow mobile animations
-- **Canvas Sizing Bug Fix** - Resolved critical canvas oversizing issue (viewport vs container mismatch)
-- **Mobile-Optimized PIXI.js** - Disabled antialias, low-power mode, proper mobile detection
-- **Animation Performance Scaling** - Reduced particle counts 6x on mobile, simplified calculations
-- **GPU Overdraw Elimination** - Canvas now exactly matches container dimensions
+- **Admin Dashboard MVP (2025-08-29)** - Professional admin panel with sidebar navigation, user management, soundboard moderation
+- **Dynamic Open Graph Sharing (2025-08-29)** - Social media previews show "[Soundboard] by [Creator] - Play it now on BapBapBapBapBap"
+- **Default Soundboard Configuration (2025-08-29)** - Set 'luvs' soundboard as main site default while preserving welcome experience
 - **Previous Updates:**
+  - **🚀 CRITICAL MOBILE PERFORMANCE OPTIMIZATION (2025-08-26)** - Comprehensive fix for slow mobile animations
+  - **Canvas Sizing Bug Fix** - Resolved critical canvas oversizing issue (viewport vs container mismatch)
+  - **Mobile-Optimized PIXI.js** - Disabled antialias, low-power mode, proper mobile detection
+  - **Animation Performance Scaling** - Reduced particle counts 6x on mobile, simplified calculations
+  - **GPU Overdraw Elimination** - Canvas now exactly matches container dimensions
   - Universal Navigation Bar Implementation - Added Navigation component to all application views
   - PIXI.js Grid Positioning & Error Fixes - Fixed grid positioning and animation cleanup
   - Logo Positioning & Navigation - Applied offsets and clickable logos with hover effects
@@ -96,13 +100,18 @@ Sample {
 ```
 
 **URL Structure:**
-- `/` - Default landing/main soundboard experience
+- `/` - Default landing/main soundboard experience (uses 'luvs' soundboard)
 - `/auth/signin` & `/auth/signup` - Authentication pages
 - `/dashboard` - Personal soundboard management
 - `/explore` - Public soundboard discovery
-- `/play/[id]` - Specific soundboard playback
+- `/play/[id]` - Specific soundboard playback (with dynamic Open Graph)
 - `/soundboard/new` - Create new soundboard
 - `/soundboard/[id]/edit` - Edit soundboard (owner only)
+- `/admin` - Admin panel (redirects to dashboard)
+- `/admin/dashboard` - Admin overview with metrics
+- `/admin/users` - User management and role editing
+- `/admin/soundboards` - Soundboard moderation
+- `/admin/builder` - Zone editor (original admin functionality)
 
 ### Key Features Implemented
 
@@ -132,6 +141,8 @@ Sample {
 - Proper authentication middleware
 - Zone management with position-based ordering
 - File upload handling with Vercel Blob integration
+- Admin API endpoints under `/api/admin/` (stats, users, soundboards)
+- Dynamic metadata generation for social sharing
 
 ### Key Components
 
@@ -154,6 +165,87 @@ Sample {
 - Reusable clipboard integration
 - Browser compatibility with fallbacks
 - Visual feedback for successful copies
+
+### Admin System
+
+**Admin Panel Structure:**
+- **AdminLayout** (`src/components/Admin/AdminLayout.tsx`) - Layout wrapper with sidebar
+- **AdminSidebar** (`src/components/Admin/AdminSidebar.tsx`) - Collapsible navigation sidebar
+- `/admin/dashboard` - Overview with key metrics and quick stats
+- `/admin/users` - User management with role editing and search/filter
+- `/admin/soundboards` - Soundboard moderation and visibility management
+- `/admin/builder` - Zone editor (moved from original `/admin`)
+
+**Admin Authentication:**
+- Cookie-based authentication using `ADMIN_PASSWORD` environment variable
+- Protected via middleware for both admin pages (`/admin/*`) and API routes (`/api/admin/*`)
+- Separate from user role system (future integration needed)
+- Admin login at `/admin-login`
+
+**Admin API Endpoints:**
+- `/api/admin/stats` - Dashboard statistics (users, soundboards, plays, growth)
+- `/api/admin/users` - User management with statistics
+- `/api/admin/users/[id]` - User role updates and deletion
+- `/api/admin/soundboards` - All soundboards with moderation data
+
+**Admin Dashboard Features:**
+- **Key Metrics**: Total users, soundboards, plays, active sessions
+- **User Growth**: Month-over-month percentage tracking
+- **Popular Soundboards**: Top 5 by play count with creator info
+- **Recent Users**: Latest 5 signups with dates
+- **Quick Actions**: Direct links to management pages
+
+**User Management Features:**
+- **User Table**: Name, email, role, soundboard count, total plays, last active
+- **Role Management**: Inline dropdown to change USER/ARTIST/ADMIN roles
+- **Search & Filter**: By name/email and role type
+- **Sorting**: By date, name, soundboards, or plays
+- **Delete Users**: With confirmation dialogs
+
+**Soundboard Management Features:**
+- **All Soundboards View**: Name, creator, status, zone stats, plays
+- **Visibility Toggle**: One-click public/private switching
+- **Creator Information**: Full user details with avatar
+- **Zone Statistics**: Active vs total zones per soundboard
+- **Direct Actions**: View, edit, delete with proper permissions
+
+### Role System Status
+
+**Current Implementation:**
+- **USER**: Default role assigned to new signups, standard permissions
+- **ARTIST**: Exists in database but no special functionality implemented (placeholder)
+- **ADMIN**: Can edit/delete any soundboard (bypasses ownership checks), but does NOT grant admin panel access
+
+**Important Notes:**
+- **Admin panel access is separate** from user role system - uses cookie-based `ADMIN_PASSWORD`
+- **ARTIST role has no features** - it's currently just a label with no additional permissions
+- **Role system is partially implemented** - roles exist and can be changed, but only ADMIN has functional differences
+
+**What Each Role Currently Does:**
+- **USER**: Can only edit/delete their own soundboards, standard user interface
+- **ARTIST**: Same as USER (no special features yet)
+- **ADMIN**: Can edit/delete ANY soundboard, same interface as regular users
+
+**Future Integration Needed:**
+- Connect user role system to admin panel access
+- Implement ARTIST features (verified badges, analytics, premium features)
+- Add role-based UI elements and navigation
+- Remove cookie-based admin auth in favor of role-based system
+
+### Sharing & Social Features
+
+**Dynamic Open Graph Implementation:**
+- **Server-side metadata generation** for `/play/[id]` pages
+- **Dynamic titles**: "[Soundboard Name] by [Creator Name] - BapBapBapBapBap"
+- **Smart descriptions**: Uses soundboard description or fallback with call-to-action
+- **Social media optimization**: Proper Open Graph and Twitter Card tags
+- **Fallback handling**: Graceful degradation for missing data
+
+**Default Soundboard Configuration:**
+- **Main site** (`/`) now uses 'luvs' soundboard (ID: cmewa8cfm0001le04cotogugb) as default
+- **Welcome screen preserved**: Original welcome message and logo remain intact
+- **Smart fallback**: If 'luvs' soundboard is not found, falls back to any public soundboard
+- **API configuration**: Updated `/api/config` endpoint to use specific soundboard by ID
 
 ### Recent Fixes & Improvements
 
@@ -202,44 +294,49 @@ Sample {
 
 ### Next Development Priorities
 
-**High Priority - User Experience:**
-1. **Enhanced Discovery:**
+**High Priority - Core System:**
+1. **Role System Integration:**
+   - Connect user roles to admin panel access (replace cookie auth)
+   - Implement ARTIST features (verified badges, enhanced analytics)
+   - Add role-based UI elements and navigation
+   - Create role promotion workflow for admins
+
+2. **Admin Panel Enhancement:**
+   - Add analytics dashboard with charts and trends
+   - Implement content moderation tools
+   - Add audit logging for admin actions
+   - Create bulk operations for soundboard management
+
+3. **Enhanced Discovery:**
    - Search and filter functionality on Explore page
    - Trending/popular soundboard sections
    - User profile pages (`/user/[username]`)
 
-2. **Soundboard Features:**
+**Medium Priority - User Experience:**
+1. **Soundboard Features:**
    - Soundboard templates for quick setup
    - Duplication/forking functionality
-   - View counts and usage analytics
    - Custom URLs/slugs for sharing
+   - Enhanced analytics for creators
 
-3. **Social Features:**
+2. **Social Features:**
    - Favorites/likes system
    - Following creators
    - Comments on soundboards
+   - Creator verification system
 
-**Medium Priority - Polish:**
-1. **Performance:**
+**Low Priority - Advanced:**
+1. **Performance & Technical:**
    - Caching strategy implementation
    - CDN integration for audio files
    - Database query optimization
+   - PWA features (offline, push notifications)
 
-2. **PWA Features:**
-   - Offline functionality
-   - Mobile app-like experience
-   - Push notifications
-
-**Low Priority - Advanced:**
-1. **Monetization:**
-   - Premium features
+2. **Monetization & Business:**
+   - Premium features for ARTIST accounts
    - Creator monetization tools
    - Marketplace functionality
-
-2. **Admin Features:**
-   - Content moderation tools
-   - Usage analytics dashboard
-   - Automated backup systems
+   - Advanced analytics and insights
 
 ### Known Issues & Production Notes
 

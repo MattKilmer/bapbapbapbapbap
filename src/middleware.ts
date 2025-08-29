@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const ADMIN_PATHS = [/^\/admin($|\/)/];
+const ADMIN_PATHS = [/^\/admin($|\/)/, /^\/api\/admin($|\/)/];
 
 export function middleware(req: NextRequest) {
   const url = new URL(req.url);
@@ -14,4 +14,4 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/admin/:path*"] };
+export const config = { matcher: ["/admin/:path*", "/api/admin/:path*"] };
