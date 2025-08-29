@@ -1,5 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { AdminLayout } from '@/components/Admin/AdminLayout';
 import Link from 'next/link';
 
@@ -24,14 +26,28 @@ interface DashboardStats {
 }
 
 export default function AdminDashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchStats();
-  }, []);
+    if (status === 'loading') return;
+    
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+      return;
+    }
+    
+    if (session?.user.role !== 'ADMIN') {
+      router.push('/access-denied');
+      return;
+    }
 
-  const fetchStats = async () => {
+    loadStats();
+  }, [status, session, router]);
+
+  const loadStats = async () => {
     try {
       const response = await fetch('/api/admin/stats');
       if (response.ok) {
@@ -45,7 +61,7 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading) {
+  if (status === 'loading' || loading || !session) {
     return (
       <AdminLayout>
         <div className="p-6 bg-gray-950 min-h-screen flex items-center justify-center">
@@ -56,6 +72,10 @@ export default function AdminDashboard() {
         </div>
       </AdminLayout>
     );
+  }
+
+  if (session.user.role !== 'ADMIN') {
+    return null; // Will redirect in useEffect
   }
 
   return (

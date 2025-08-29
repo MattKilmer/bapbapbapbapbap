@@ -41,6 +41,15 @@ export function Navigation() {
               >
                 Dashboard
               </Link>
+              {session.user.role === 'ADMIN' && (
+                <Link 
+                  href="/admin"
+                  className="text-red-400 hover:text-red-300 transition-colors text-sm sm:text-base"
+                  title="Admin Panel"
+                >
+                  Admin
+                </Link>
+              )}
               <Link 
                 href={session.user?.username ? `/user/${session.user.username}` : '/settings'}
                 className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm max-w-20 sm:max-w-none truncate"

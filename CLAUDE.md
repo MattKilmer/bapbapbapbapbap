@@ -23,7 +23,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `NEXTAUTH_SECRET` - NextAuth.js secret key
   - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` - Google OAuth credentials
   - `NEXTAUTH_URL` - Base URL for NextAuth callbacks
-  - `ADMIN_PASSWORD` - Password for admin panel access
 
 ## Architecture Overview
 
@@ -213,10 +212,10 @@ Sample {
 - `/admin/builder` - Zone editor (moved from original `/admin`)
 
 **Admin Authentication:**
-- Cookie-based authentication using `ADMIN_PASSWORD` environment variable
+- **Role-based authentication** using NextAuth session system
 - Protected via middleware for both admin pages (`/admin/*`) and API routes (`/api/admin/*`)
-- Separate from user role system (future integration needed)
-- Admin login at `/admin-login`
+- **Integrated with user system** - ADMIN role users get access
+- **Single sign-on** - same authentication as regular users
 
 **Admin API Endpoints:**
 - `/api/admin/stats` - Dashboard statistics (users, soundboards, plays, growth)

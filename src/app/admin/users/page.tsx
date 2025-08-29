@@ -1,5 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { AdminLayout } from '@/components/Admin/AdminLayout';
 
 interface User {
@@ -14,6 +16,8 @@ interface User {
 }
 
 export default function AdminUsersPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,8 +26,20 @@ export default function AdminUsersPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   useEffect(() => {
+    if (status === 'loading') return;
+    
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+      return;
+    }
+    
+    if (session?.user.role !== 'ADMIN') {
+      router.push('/access-denied');
+      return;
+    }
+
     fetchUsers();
-  }, []);
+  }, [status, session, router]);
 
   const fetchUsers = async () => {
     try {
@@ -114,7 +130,7 @@ export default function AdminUsersPage() {
     }
   };
 
-  if (loading) {
+  if (status === 'loading' || loading || !session) {
     return (
       <AdminLayout>
         <div className="p-6 bg-gray-950 min-h-screen flex items-center justify-center">
@@ -125,6 +141,10 @@ export default function AdminUsersPage() {
         </div>
       </AdminLayout>
     );
+  }
+
+  if (session.user.role !== 'ADMIN') {
+    return null; // Will redirect in useEffect
   }
 
   return (
