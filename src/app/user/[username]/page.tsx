@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Navigation } from '@/components/Navigation';
 import { CopyLinkButton } from '@/components/CopyLinkButton';
@@ -26,7 +27,6 @@ interface UserProfile {
 
 export default function UserProfilePage() {
   const params = useParams();
-  const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -121,9 +121,11 @@ export default function UserProfilePage() {
             <div className="flex items-start gap-6">
               <div className="flex-shrink-0">
                 {user.image ? (
-                  <img
+                  <Image
                     src={user.image}
                     alt={user.name || user.username}
+                    width={96}
+                    height={96}
                     className="w-24 h-24 rounded-full object-cover border-2 border-gray-600"
                   />
                 ) : (
@@ -171,7 +173,7 @@ export default function UserProfilePage() {
             {user.soundboards.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-gray-400 text-lg">
-                  This user hasn't created any public soundboards yet.
+                  This user hasnt created any public soundboards yet.
                 </div>
               </div>
             ) : (

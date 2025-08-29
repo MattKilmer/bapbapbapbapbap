@@ -49,7 +49,7 @@ async function generateUniqueUsername(baseName: string, email: string): Promise<
   return username;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Find all users without usernames
     const usersWithoutUsernames = await prisma.user.findMany({
