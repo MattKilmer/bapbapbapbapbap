@@ -132,7 +132,7 @@ export default function AdminDashboard() {
                 </Link>
               </div>
               <div className="space-y-4">
-                {stats?.popularSoundboards?.length > 0 ? (
+                {stats?.popularSoundboards && stats.popularSoundboards.length > 0 ? (
                   stats.popularSoundboards.map((soundboard, index) => (
                     <div key={soundboard.id} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
                       <div className="flex items-center gap-3">
