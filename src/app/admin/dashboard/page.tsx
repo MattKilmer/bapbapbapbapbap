@@ -167,7 +167,7 @@ export default function AdminDashboard() {
                 </Link>
               </div>
               <div className="space-y-4">
-                {stats?.recentUsers?.length > 0 ? (
+                {stats?.recentUsers && stats.recentUsers.length > 0 ? (
                   stats.recentUsers.map((user) => (
                     <div key={user.id} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
                       <div className="flex items-center gap-3">
