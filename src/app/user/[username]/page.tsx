@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Navigation } from '@/components/Navigation';
@@ -27,11 +28,13 @@ interface UserProfile {
 
 export default function UserProfilePage() {
   const params = useParams();
+  const { data: session } = useSession();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const username = params.username as string;
+  const isOwnProfile = session?.user?.username === username;
 
   useEffect(() => {
     if (!username) return;
@@ -147,7 +150,7 @@ export default function UserProfilePage() {
                 
                 <p className="text-gray-400 text-lg mb-3">@{user.username}</p>
                 
-                <div className="flex flex-wrap gap-6 text-sm text-gray-300">
+                <div className="flex flex-wrap gap-6 text-sm text-gray-300 mb-4">
                   <div>
                     <span className="font-semibold text-white">{user.soundboards.length}</span> soundboards
                   </div>
@@ -160,6 +163,17 @@ export default function UserProfilePage() {
                     Member since {formatDate(user.createdAt)}
                   </div>
                 </div>
+
+                {isOwnProfile && (
+                  <div className="flex gap-3">
+                    <Link
+                      href="/settings"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors text-sm font-medium"
+                    >
+                      Edit Profile
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>

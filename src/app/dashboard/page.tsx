@@ -151,11 +151,10 @@ export default function Dashboard() {
             <p className="text-gray-400">Discover public soundboards</p>
           </Link>
 
-          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-            <h3 className="text-xl font-semibold mb-2">📊 Stats</h3>
-            <p className="text-gray-400">{soundboards.length} soundboards</p>
-            <p className="text-gray-400">{soundboards.reduce((acc, sb) => acc + sb.plays, 0)} total plays</p>
-          </div>
+          <Link href="/settings" className="bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-purple-500 transition-colors group">
+            <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-400">⚙️ Settings</h3>
+            <p className="text-gray-400">Edit your profile and preferences</p>
+          </Link>
         </div>
 
         {/* My Soundboards */}
