@@ -43,9 +43,10 @@ This is a **multi-user interactive audio-visual soundboard platform** built with
 - Successfully deployed to production
 
 **Latest Session Updates:**
+- **Role-Based Admin System (2025-08-29)** - Complete overhaul of admin authentication using NextAuth instead of cookies
 - **User Profile System Complete (2025-08-29)** - Full user profiles with username system, profile editing, and public/private soundboard display
 - **Profile Editing System (2025-08-29)** - Comprehensive settings page for username and display name editing with validation
-- **Navigation Enhancement (2025-08-29)** - User names in navigation link to profiles, improved UX flow
+- **Navigation Enhancement (2025-08-29)** - User names in navigation link to profiles, Admin link for admin users
 - **Previous Major Updates:**
   - **Admin Dashboard MVP (2025-08-29)** - Professional admin panel with sidebar navigation, user management, soundboard moderation
   - **Dynamic Open Graph Sharing (2025-08-29)** - Social media previews show "[Soundboard] by [Creator] - Play it now on BapBapBapBapBap"
@@ -81,7 +82,7 @@ This is a **multi-user interactive audio-visual soundboard platform** built with
 **Database Schema (Updated):**
 ```prisma
 User {
-  id, email, name, password, role
+  id, email, name, username, password, role
   soundboards Soundboard[]
 }
 
@@ -112,6 +113,7 @@ Sample {
 - `/soundboard/[id]/edit` - Edit soundboard (owner only)
 - `/user/[username]` - Public user profiles with soundboard collections
 - `/settings` - Profile editing (username, display name, account info)
+- `/access-denied` - Friendly error page for non-admin users attempting admin access
 - `/admin` - Admin panel (redirects to dashboard)
 - `/admin/dashboard` - Admin overview with metrics
 - `/admin/users` - User management and role editing
@@ -172,6 +174,7 @@ Sample {
 - Authentication state integration
 - Logo and branding
 - **Smart profile linking** - User names link to profiles when username exists, settings when not
+- **Role-based admin access** - Red "Admin" link appears for users with ADMIN role
 
 **Copy Functionality (`src/components/CopyLinkButton.tsx`):**
 - Reusable clipboard integration
@@ -249,23 +252,25 @@ Sample {
 **Current Implementation:**
 - **USER**: Default role assigned to new signups, standard permissions
 - **ARTIST**: Exists in database but no special functionality implemented (placeholder)
-- **ADMIN**: Can edit/delete any soundboard (bypasses ownership checks), but does NOT grant admin panel access
+- **ADMIN**: Full admin panel access + can edit/delete any soundboard
 
-**Important Notes:**
-- **Admin panel access is separate** from user role system - uses cookie-based `ADMIN_PASSWORD`
-- **ARTIST role has no features** - it's currently just a label with no additional permissions
-- **Role system is partially implemented** - roles exist and can be changed, but only ADMIN has functional differences
+**Role System Features:**
+- **Integrated Authentication**: Admin panel uses NextAuth session system (no separate login)
+- **Middleware Protection**: Admin routes protected by JWT token validation
+- **Navigation Integration**: Admin link appears in navigation for ADMIN users
+- **Access Control**: Non-admin users redirected to access denied page
+- **Database Management**: Role changes via database updates or admin panel
 
 **What Each Role Currently Does:**
 - **USER**: Can only edit/delete their own soundboards, standard user interface
-- **ARTIST**: Same as USER (no special features yet)
-- **ADMIN**: Can edit/delete ANY soundboard, same interface as regular users
+- **ARTIST**: Same as USER (no special features yet - placeholder for future premium features)
+- **ADMIN**: Full admin panel access + can edit/delete ANY soundboard + admin navigation link
 
-**Future Integration Needed:**
-- Connect user role system to admin panel access
-- Implement ARTIST features (verified badges, analytics, premium features)
-- Add role-based UI elements and navigation
-- Remove cookie-based admin auth in favor of role-based system
+**Admin Panel Access:**
+- **mvkilmer@gmail.com**: Set as super admin with full privileges
+- **Role-based routing**: `/admin/*` paths require ADMIN role
+- **Session validation**: All admin pages verify authentication and authorization
+- **Single sign-on**: Same login flow as regular users
 
 ### Sharing & Social Features
 
@@ -434,6 +439,12 @@ Sample {
 - **Remote Image Patterns** - `lh3.googleusercontent.com` and `avatars.githubusercontent.com`
 - **Database Schema** - Username field with unique constraint added to User model
 - **Session Management** - NextAuth updated to include username in JWT and session
+- **Admin Authentication** - Middleware uses JWT token validation instead of cookies
+
+### Scripts & Tools
+- **Username Generation** - `scripts/generate-usernames.js` for bulk username creation
+- **Admin Role Setup** - `scripts/set-admin-role.js` to assign ADMIN role to users
+- **Database Management** - All scripts include proper error handling and success reporting
 
 ### Deployment Notes
 - Vercel deployment configured
@@ -441,4 +452,4 @@ Sample {
 - Database migrations automated
 - TypeScript compilation verified
 - Production build optimized and tested
-- **Latest deployment (2025-08-29):** Complete user profile system with editing capabilities, username validation, and navigation enhancements
+- **Latest deployment (2025-08-29):** Role-based admin authentication system, complete user profiles with editing, and integrated navigation
