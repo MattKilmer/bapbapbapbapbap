@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Disallow admin pages from search engines
+Disallow: /admin/
+Disallow: /access-denied
+
+# Allow important pages
+Allow: /
+Allow: /explore
+Allow: /play/
+Allow: /user/
+
+# Sitemap location
+Sitemap: https://bapbapbapbapbap.com/sitemap.xml

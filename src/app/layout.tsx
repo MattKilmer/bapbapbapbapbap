@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Comfortaa } from "next/font/google";
 import { Providers } from '@/components/providers';
 import { Analytics } from "@vercel/analytics/next";
+import { WebsiteStructuredData } from '@/components/StructuredData';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,16 +22,28 @@ const comfortaa = Comfortaa({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bapbapbapbapbap.com'),
-  title: "BapBapBapBapBap",
-  description: "Interactive audio-visual experience - just tap it",
+  title: {
+    default: "BapBapBapBapBap - Browser-Based Audio Sampler",
+    template: "%s | BapBapBapBapBap"
+  },
+  description: "Create and share interactive soundboards with our free browser-based sampler. Upload audio samples, create beats, and discover community soundboards. No downloads required - web-based sampler for musicians and creators.",
+  keywords: ["sampler", "browser-based sampler", "web-based sampler", "soundboard", "audio samples", "beat maker", "music production", "online sampler", "interactive audio", "sound effects"],
+  authors: [{ name: "BapBapBapBapBap Team" }],
+  creator: "BapBapBapBapBap",
+  publisher: "BapBapBapBapBap",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
     icon: '/icon',
     apple: '/apple-icon',
     shortcut: '/icon',
   },
   openGraph: {
-    title: "BapBapBapBapBap",
-    description: "Interactive audio-visual experience - just tap it",
+    title: "BapBapBapBapBap - Browser-Based Audio Sampler",
+    description: "Create and share interactive soundboards with our free browser-based sampler. Upload audio samples, create beats, and discover community soundboards.",
     type: "website",
     locale: "en_US",
     siteName: "BapBapBapBapBap",
@@ -40,26 +53,30 @@ export const metadata: Metadata = {
         url: 'https://bapbapbapbapbap.com/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'BapBapBapBapBap - just tap it',
+        alt: 'BapBapBapBapBap - Browser-based audio sampler for creating interactive soundboards',
         type: 'image/png',
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BapBapBapBapBap",
-    description: "Interactive audio-visual experience - just tap it",
+    title: "BapBapBapBapBap - Browser-Based Audio Sampler",
+    description: "Create and share interactive soundboards with our free browser-based sampler. Upload audio samples, create beats, and discover community soundboards.",
     images: ['https://bapbapbapbapbap.com/og-image.png'],
+    creator: "@bapbapbapbapbap",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
-  other: {
-    'og:image:width': '1200',
-    'og:image:height': '630',
-    'og:image:type': 'image/png',
-  },
+  category: 'Music',
 };
 
 export default function RootLayout({
@@ -85,6 +102,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${comfortaa.variable} antialiased`}
       >
+        <WebsiteStructuredData />
         <Providers>
           {children}
         </Providers>
