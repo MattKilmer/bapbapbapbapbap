@@ -43,10 +43,14 @@ This is a **multi-user interactive audio-visual soundboard platform** built with
 - Successfully deployed to production
 
 **Latest Session Updates:**
-- **Role-Based Admin System (2025-08-29)** - Complete overhaul of admin authentication using NextAuth instead of cookies
-- **User Profile System Complete (2025-08-29)** - Full user profiles with username system, profile editing, and public/private soundboard display
-- **Profile Editing System (2025-08-29)** - Comprehensive settings page for username and display name editing with validation
-- **Navigation Enhancement (2025-08-29)** - User names in navigation link to profiles, Admin link for admin users
+- **Profile Picture Upload System (2025-08-30)** - Complete custom profile picture functionality with Vercel Blob integration
+- **Enhanced Admin Navigation (2025-08-30)** - Added main site navigation to admin dashboard for seamless user experience
+- **Vercel Analytics Integration (2025-08-30)** - Added comprehensive user tracking for Reddit marketing campaign measurement
+- **Previous Session Updates:**
+  - **Role-Based Admin System (2025-08-29)** - Complete overhaul of admin authentication using NextAuth instead of cookies
+  - **User Profile System Complete (2025-08-29)** - Full user profiles with username system, profile editing, and public/private soundboard display
+  - **Profile Editing System (2025-08-29)** - Comprehensive settings page for username and display name editing with validation
+  - **Navigation Enhancement (2025-08-29)** - User names in navigation link to profiles, Admin link for admin users
 - **Previous Major Updates:**
   - **Admin Dashboard MVP (2025-08-29)** - Professional admin panel with sidebar navigation, user management, soundboard moderation
   - **Dynamic Open Graph Sharing (2025-08-29)** - Social media previews show "[Soundboard] by [Creator] - Play it now on BapBapBapBapBap"
@@ -83,6 +87,7 @@ This is a **multi-user interactive audio-visual soundboard platform** built with
 ```prisma
 User {
   id, email, name, username, password, role
+  image, customImage
   soundboards Soundboard[]
 }
 
@@ -129,6 +134,7 @@ Sample {
 - Delete soundboard functionality with confirmation
 - **Public user profiles** at `/user/[username]` with soundboard collections
 - **Profile editing system** with username and display name management
+- **Custom profile picture uploads** with Vercel Blob integration and OAuth fallbacks
 - **Username validation** with uniqueness checks and reserved word protection
 - **Session synchronization** when profile updates occur
 
@@ -188,7 +194,9 @@ Sample {
 - **Profile Editing** (`/settings`) - Comprehensive settings page for profile management
 - **Username System** - Unique usernames with validation (3-20 chars, alphanumeric + underscore)
 - **Display Names** - Customizable display names up to 50 characters
-- **Profile Images** - Support for Google OAuth and GitHub profile pictures via Next.js Image
+- **Custom Profile Pictures** - Upload custom images with 5MB limit, file validation, and Vercel Blob storage
+- **Profile Image Prioritization** - Custom images take priority over OAuth images with graceful fallbacks
+- **Image Management** - Remove custom images to revert to OAuth profile pictures
 - **Edit Profile Button** - Appears on own profile for quick access to settings
 - **Username Generation** - Admin tool and script for generating usernames for existing users
 
@@ -207,8 +215,9 @@ Sample {
 ### Admin System
 
 **Admin Panel Structure:**
-- **AdminLayout** (`src/components/Admin/AdminLayout.tsx`) - Layout wrapper with sidebar
+- **AdminLayout** (`src/components/Admin/AdminLayout.tsx`) - Layout wrapper with sidebar and main site navigation
 - **AdminSidebar** (`src/components/Admin/AdminSidebar.tsx`) - Collapsible navigation sidebar
+- **Main Site Navigation** - Full navigation bar for seamless switching between admin and user functions
 - `/admin/dashboard` - Overview with key metrics and quick stats
 - `/admin/users` - User management with role editing and search/filter
 - `/admin/soundboards` - Soundboard moderation and visibility management
@@ -287,7 +296,29 @@ Sample {
 - **Smart fallback**: If 'luvs' soundboard is not found, falls back to any public soundboard
 - **API configuration**: Updated `/api/config` endpoint to use specific soundboard by ID
 
+### Analytics & Marketing Tools
+
+**Vercel Analytics Integration:**
+- **@vercel/analytics/next** integrated in root layout for comprehensive user tracking
+- **Page view tracking** with automatic source attribution (including reddit.com referrals)
+- **User behavior analytics** for measuring engagement and conversion rates
+- **Traffic source analysis** to optimize marketing campaigns and measure Reddit post effectiveness
+- **Real-time metrics** available in Vercel dashboard for immediate campaign feedback
+
+**Marketing Campaign Support:**
+- **Reddit Community Strategy** - Tailored content for music production communities
+- **Traffic Attribution** - Track which Reddit posts drive the most valuable users
+- **Conversion Funnels** - Monitor user journey from Reddit to registration/soundboard creation
+- **A/B Testing Ready** - Analytics foundation supports testing different approaches
+
 ### Recent Fixes & Improvements
+
+**Latest Session (2025-08-30):**
+- **Profile Picture Upload System** - Complete custom image upload with Vercel Blob storage
+- **Next.js Image Configuration** - Fixed Vercel Blob domain support for custom profile pictures
+- **Admin Navigation Enhancement** - Added main site navigation to admin panel for seamless UX
+- **TypeScript Compilation** - Resolved all build errors for production deployment
+- **Vercel Analytics** - Added comprehensive user tracking for marketing measurement
 
 **Production Deployment Fixes:**
 - Resolved Prisma seed file TypeScript errors
