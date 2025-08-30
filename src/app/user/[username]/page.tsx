@@ -13,6 +13,7 @@ interface UserProfile {
   name: string;
   username: string;
   image?: string;
+  customImage?: string;
   role: string;
   createdAt: string;
   soundboards: Array<{
@@ -123,10 +124,10 @@ export default function UserProfilePage() {
           <div className="bg-gray-800 rounded-lg p-6 mb-8">
             <div className="flex items-start gap-6">
               <div className="flex-shrink-0">
-                {user.image ? (
+                {(user.customImage || user.image) ? (
                   <Image
-                    src={user.image}
-                    alt={user.name || user.username}
+                    src={user.customImage || user.image || ''}
+                    alt={user.name || user.username || 'User'}
                     width={96}
                     height={96}
                     className="w-24 h-24 rounded-full object-cover border-2 border-gray-600"

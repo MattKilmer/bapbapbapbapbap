@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Navigation } from '@/components/Navigation';
 
 interface UserProfile {
@@ -12,6 +13,7 @@ interface UserProfile {
   username: string | null;
   email: string;
   image: string | null;
+  customImage: string | null;
   role: string;
   createdAt: string;
 }
@@ -30,6 +32,7 @@ export default function SettingsPage() {
   const [editingUsername, setEditingUsername] = useState(false);
   const [tempName, setTempName] = useState('');
   const [tempUsername, setTempUsername] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -144,6 +147,98 @@ export default function SettingsPage() {
     setError(null);
   };
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image file');
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image size must be less than 5MB');
+      return;
+    }
+
+    setUploadingImage(true);
+    setError(null);
+    
+    try {
+      // Create form data with the file
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Upload file directly to our API
+      const uploadResponse = await fetch('/api/upload-token', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!uploadResponse.ok) {
+        throw new Error('Failed to upload image');
+      }
+      
+      const { url: uploadedUrl } = await uploadResponse.json();
+      
+      // Update profile with new image URL
+      const updateResponse = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customImage: uploadedUrl })
+      });
+
+      const data = await updateResponse.json();
+
+      if (updateResponse.ok) {
+        setProfile(data.user);
+        setSuccess('Profile picture updated successfully!');
+        // Update the session with new image
+        await update({ image: data.user.customImage || data.user.image });
+      } else {
+        setError(data.error || 'Failed to update profile picture');
+      }
+    } catch (err) {
+      console.error('Error uploading image:', err);
+      setError('Failed to upload profile picture');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const removeCustomImage = async () => {
+    if (!profile?.customImage) return;
+
+    setSaving(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customImage: null })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setProfile(data.user);
+        setSuccess('Custom profile picture removed. Using default image.');
+        // Update the session to use OAuth image or fallback
+        await update({ image: data.user.image });
+      } else {
+        setError(data.error || 'Failed to remove custom image');
+      }
+    } catch (err) {
+      console.error('Error removing custom image:', err);
+      setError('Failed to remove custom image');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (status === 'loading' || loading) {
     return (
       <>
@@ -197,6 +292,74 @@ export default function SettingsPage() {
               {success}
             </div>
           )}
+
+          {/* Profile Picture */}
+          <div className="bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 className="text-xl font-semibold text-white mb-6">Profile Picture</h2>
+            
+            <div className="flex items-start gap-6 mb-6">
+              <div className="flex-shrink-0">
+                {(profile.customImage || profile.image) ? (
+                  <Image
+                    src={profile.customImage || profile.image || ''}
+                    alt={profile.name || 'Profile'}
+                    width={96}
+                    height={96}
+                    className="w-24 h-24 rounded-full object-cover border-2 border-gray-600"
+                    priority
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+                    {(profile.name || profile.email)?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex-1">
+                <h3 className="text-white font-medium mb-2">Change your profile picture</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Upload a custom image or use your {profile.image ? 'Google' : 'default'} profile picture
+                </p>
+                
+                <div className="flex flex-wrap gap-3">
+                  <label className={`px-4 py-2 rounded-lg transition-colors cursor-pointer ${
+                    uploadingImage 
+                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                      : 'bg-blue-600 text-white hover:bg-blue-500'
+                  }`}>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={uploadingImage}
+                      className="hidden"
+                    />
+                    {uploadingImage ? 'Uploading...' : 'Upload New Picture'}
+                  </label>
+                  
+                  {profile.customImage && (
+                    <button
+                      onClick={removeCustomImage}
+                      disabled={saving}
+                      className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {saving ? 'Removing...' : 'Remove Custom Picture'}
+                    </button>
+                  )}
+                </div>
+                
+                <p className="text-xs text-gray-500 mt-2">
+                  Supported formats: JPG, PNG, GIF. Max size: 5MB
+                </p>
+                
+                {profile.customImage && profile.image && (
+                  <p className="text-xs text-gray-400 mt-2">
+                    Currently using custom picture. Remove to use your Google profile picture.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
 
           {/* Profile Settings */}
           <div className="bg-gray-800 rounded-lg p-6 mb-8">

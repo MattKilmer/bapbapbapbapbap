@@ -48,6 +48,7 @@ export async function GET() {
         username: true,
         email: true,
         image: true,
+        customImage: true,
         role: true,
         createdAt: true
       }
@@ -83,17 +84,17 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, username } = body;
+    const { name, username, customImage } = body;
 
     // Validate input
-    if (!name && !username) {
+    if (name === undefined && username === undefined && customImage === undefined) {
       return NextResponse.json(
-        { error: 'At least one field (name or username) is required' },
+        { error: 'At least one field (name, username, or customImage) is required' },
         { status: 400 }
       );
     }
 
-    const updateData: { name?: string; username?: string } = {};
+    const updateData: { name?: string; username?: string; customImage?: string | null } = {};
 
     // Validate and prepare name update
     if (name !== undefined) {
@@ -141,6 +142,11 @@ export async function PATCH(request: NextRequest) {
       updateData.username = trimmedUsername;
     }
 
+    // Handle customImage update
+    if (customImage !== undefined) {
+      updateData.customImage = customImage;
+    }
+
     // Update the user
     const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
@@ -151,6 +157,7 @@ export async function PATCH(request: NextRequest) {
         username: true,
         email: true,
         image: true,
+        customImage: true,
         role: true,
         createdAt: true
       }

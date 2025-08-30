@@ -15,6 +15,7 @@ export async function GET(
         name: true,
         username: true,
         image: true,
+        customImage: true,
         role: true,
         createdAt: true,
         soundboards: {
